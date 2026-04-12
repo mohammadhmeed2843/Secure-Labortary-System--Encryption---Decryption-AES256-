@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<AnchorPane prefHeight="458.0" prefWidth="700.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="javafxapplication7.openEncryptionController"
+            style="-fx-background-color:#2d2d2d">
+
+    <!-- Header -->
+    <Text layoutX="203" layoutY="60" text="Encryption Page"
+          style="-fx-fill:white;-fx-font-size:28;-fx-font-family:'Helvetica Neue';-fx-font-weight:bold"/>
+
+    <!-- Input PDFs -->
+    <Label text="Input PDF(s):" layoutX="22" layoutY="100"
+           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
+    <TextField fx:id="inputFolderTextField" layoutX="123" layoutY="95" prefWidth="370"
+               promptText="Select PDF file(s)" styleClass="dark-field"/>
+    <Button text="Browse" layoutX="510" layoutY="95" prefWidth="140"
+            onAction="#browseInputFolder" styleClass="main-btn"/>
+
+    <!-- Key -->
+    <Label text="Encryption Key:" layoutX="22" layoutY="155"
+           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
+    <TextField fx:id="keyTextField" layoutX="150" layoutY="150" prefWidth="300"
+               promptText="Key" styleClass="dark-field"/>
+    <Button text="Paste" layoutX="460" layoutY="150" prefWidth="60"
+            onAction="#pasteKey" styleClass="small-btn"/>
+
+    <!-- IV -->
+    <Label text="Initialization Vector (IV):" layoutX="22" layoutY="210"
+           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
+    <TextField fx:id="ivTextField" layoutX="235" layoutY="205" prefWidth="215"
+               promptText="IV" styleClass="dark-field"/>
+    <Button text="Paste" layoutX="460" layoutY="205" prefWidth="60"
+            onAction="#pasteIv" styleClass="small-btn"/>
+
+    <!-- Output folder -->
+    <Label text="Output Folder:" layoutX="22" layoutY="265"
+           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
+    <TextField fx:id="outputFolderTextField" layoutX="150" layoutY="260" prefWidth="300"
+               promptText="Output folder" styleClass="dark-field"/>
+    <Button text="Select Folder" layoutX="460" layoutY="260" prefWidth="140"
+            onAction="#browseOutputFolder" styleClass="main-btn"/>
+
+    <!-- Encrypt + Back -->
+    <Button text="Encrypt" layoutX="280" layoutY="315" prefWidth="140" prefHeight="50"
+            onAction="#encryptFolder" styleClass="main-btn"/>
+    <Button text="Back" layoutX="15" layoutY="400" prefWidth="100"
+            onAction="#backToHomePage" styleClass="main-btn"/>
+
+    <stylesheets>
+        <URL value="@styles.css"/>
+    </stylesheets>
+</AnchorPane>

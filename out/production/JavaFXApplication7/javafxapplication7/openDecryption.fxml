@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="500.0" prefWidth="700.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="javafxapplication7.OpenDecryptionController"
+            style="-fx-background-color:#2d2d2d">
+
+    <!-- Header -->
+    <Text layoutX="213" layoutY="40" text="Decryption Page"
+          style="-fx-fill:white;-fx-font-size:26;-fx-font-family:'Helvetica Neue';-fx-font-weight:bold"/>
+
+    <!-- Patient Selection -->
+    <Label text="Select Patient:" layoutX="32" layoutY="90"
+           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
+    <ComboBox fx:id="patientComboBox" layoutX="170" layoutY="85" prefWidth="330"
+              onAction="#handlePatientSelect"/>
+
+    <!-- Key -->
+    <Label text="Decryption Key:" layoutX="32" layoutY="140"
+           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
+    <TextField fx:id="keyTextField" layoutX="170" layoutY="135" prefWidth="270"
+               promptText="Base64 Key" styleClass="dark-field"/>
+    <Button text="Paste" layoutX="450" layoutY="135" prefWidth="60"
+            onAction="#pasteKey" styleClass="small-btn"/>
+
+    <!-- IV -->
+    <Label text="Initialization Vector (IV):" layoutX="32" layoutY="190"
+           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
+    <TextField fx:id="ivTextField" layoutX="260" layoutY="185" prefWidth="180"
+               promptText="Base64 IV" styleClass="dark-field"/>
+    <Button text="Paste" layoutX="450" layoutY="185" prefWidth="60"
+            onAction="#pasteIv" styleClass="small-btn"/>
+
+    <!-- Output Folder -->
+    <Label text="Output Folder:" layoutX="32" layoutY="240"
+           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
+    <TextField fx:id="outputFolderField" layoutX="170" layoutY="235" prefWidth="270"
+               promptText="Where to save the file" styleClass="dark-field"/>
+    <Button text="Browse" layoutX="450" layoutY="235" prefWidth="60"
+            onAction="#handleSelectFolder" styleClass="small-btn"/>
+
+    <!-- Decrypt Button -->
+    <Button text="Decrypt" layoutX="280" layoutY="300" prefWidth="140" prefHeight="50"
+            onAction="#handleDecrypt" style="-fx-background-color:#2a9d8f;-fx-text-fill:white"/>
+
+    <!-- Back Button -->
+    <Button text="Back" layoutX="20" layoutY="440" prefWidth="100"
+            onAction="#backToHomePage" styleClass="main-btn"/>
+</AnchorPane>

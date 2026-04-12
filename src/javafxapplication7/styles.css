@@ -1,0 +1,19 @@
+.dark-field {
+    -fx-background-color: #444;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #666;
+}
+.main-btn {
+    -fx-background-color: #3e3e3e;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 6;
+}
+.small-btn {
+    -fx-background-color: #555;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-background-radius: 6;
+}

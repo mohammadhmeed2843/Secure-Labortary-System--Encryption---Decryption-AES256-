@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefWidth="700.0" prefHeight="620.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="javafxapplication7.HomePageController"
+            style="-fx-background-color:#2d2d2d">
+
+    <!-- Header -->
+    <Text layoutX="70" layoutY="50" text="File Encryption and Decryption Project"
+          style="-fx-fill:white;-fx-font-size:28px;-fx-font-family:'Helvetica Neue';-fx-font-weight:bold"/>
+
+    <!-- Help button -->
+    <Button text="Help" layoutX="600" layoutY="40" prefWidth="70"
+            onAction="#showHelp" styleClass="small-btn"/>
+
+    <!-- == IV row == -->
+    <Button text="Generate IV" layoutX="70" layoutY="130"
+            onAction="#IVGeneration" prefWidth="160" prefHeight="45"
+            styleClass="main-btn"/>
+    <TextField fx:id="ivDisplayField" layoutX="250" layoutY="130" prefWidth="280"
+               promptText="IV" styleClass="dark-field"/>
+    <Button text="Copy" layoutX="540" layoutY="130" prefWidth="60"
+            onAction="#copyIv" styleClass="small-btn"/>
+    <Button text="Save" layoutX="610" layoutY="130" prefWidth="60"
+            onAction="#saveIv" styleClass="small-btn"/>
+
+    <!-- == Key row == -->
+    <Button text="Generate Key" layoutX="70" layoutY="200"
+            onAction="#KeyGeneration" prefWidth="160" prefHeight="45"
+            styleClass="main-btn"/>
+    <TextField fx:id="ikDisplayField" layoutX="250" layoutY="200" prefWidth="280"
+               promptText="Key" styleClass="dark-field"/>
+    <Button text="Copy" layoutX="540" layoutY="200" prefWidth="60"
+            onAction="#copyKey" styleClass="small-btn"/>
+    <Button text="Save" layoutX="610" layoutY="200" prefWidth="60"
+            onAction="#saveKey" styleClass="small-btn"/>
+
+    <!-- IV+Key combined -->
+    <TextField fx:id="resultTextField" layoutX="70" layoutY="280" prefWidth="460"
+               promptText="IV and Key" styleClass="dark-field"/>
+    <Button text="Save to File" layoutX="540" layoutY="280" prefWidth="130"
+            onAction="#saveToFile" styleClass="small-btn"/>
+
+    <!-- Navigation buttons (more vertical space added) -->
+    <Button text="Encryption" layoutX="170" layoutY="370"
+            onAction="#openEncryption" prefWidth="150" prefHeight="55"
+            styleClass="main-btn"/>
+    <Button text="Decryption" layoutX="380" layoutY="370"
+            onAction="#openDecryption" prefWidth="150" prefHeight="55"
+            styleClass="main-btn"/>
+
+    <!-- Footer -->
+    <Text layoutX="200" layoutY="590" text="Secure Laboratory Data System"
+          style="-fx-fill:#7f8c8d;-fx-font-size:25px;-fx-font-family:'Helvetica Neue'"/>
+
+    <stylesheets>
+        <URL value="@styles.css"/>
+    </stylesheets>
+</AnchorPane>

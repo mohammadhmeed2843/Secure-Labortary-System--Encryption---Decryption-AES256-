@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
+            fx:controller="javafxapplication7.PatientFormController"
+            prefWidth="600" prefHeight="620"
+            style="-fx-background-color: #2d2d2d;">
+
+    <!-- Header -->
+    <Text layoutX="160" layoutY="35" text="Add Patient &amp; Test Record"
+          style="-fx-fill: white; -fx-font-size: 22px; -fx-font-family: 'Helvetica Neue';"/>
+
+    <!-- Patient Info -->
+    <Label text="First Name:" layoutX="50" layoutY="70" style="-fx-text-fill: white;"/>
+    <TextField fx:id="firstNameField" layoutX="180" layoutY="65" prefWidth="300"/>
+
+    <Label text="Last Name:" layoutX="50" layoutY="115" style="-fx-text-fill: white;"/>
+    <TextField fx:id="lastNameField" layoutX="180" layoutY="110" prefWidth="300"/>
+
+    <Label text="Date of Birth:" layoutX="50" layoutY="160" style="-fx-text-fill: white;"/>
+    <DatePicker fx:id="dobPicker" layoutX="180" layoutY="155" prefWidth="300"/>
+
+    <Label text="Patient Number:" layoutX="50" layoutY="205" style="-fx-text-fill: white;"/>
+    <TextField fx:id="patientNumberField" layoutX="180" layoutY="200" prefWidth="300"/>
+
+    <!-- Test Info -->
+    <Label text="Select Test:" layoutX="50" layoutY="250" style="-fx-text-fill: white;"/>
+    <ComboBox fx:id="testNameBox" layoutX="180" layoutY="245" prefWidth="300"/>
+
+    <Label text="Select Doctor:" layoutX="50" layoutY="295" style="-fx-text-fill: white;"/>
+    <ComboBox fx:id="doctorBox" layoutX="180" layoutY="290" prefWidth="300"/>
+
+    <Label text="Select Technician:" layoutX="50" layoutY="340" style="-fx-text-fill: white;"/>
+    <ComboBox fx:id="technicianBox" layoutX="180" layoutY="335" prefWidth="300"/>
+
+    <Label text="Test Status:" layoutX="50" layoutY="385" style="-fx-text-fill: white;"/>
+    <ComboBox fx:id="statusBox" layoutX="180" layoutY="380" prefWidth="300"/>
+
+    <Label text="Test Date:" layoutX="50" layoutY="430" style="-fx-text-fill: white;"/>
+    <DatePicker fx:id="testDatePicker" layoutX="180" layoutY="425" prefWidth="300"/>
+
+    <!-- File Display -->
+    <Label text="Selected File:" layoutX="50" layoutY="470" style="-fx-text-fill: white;"/>
+    <Label fx:id="fileNameLabel" layoutX="180" layoutY="470" text="(none)" style="-fx-text-fill: lightgray;"/>
+
+    <!-- Buttons -->
+    <Button text="Save" layoutX="180" layoutY="510" prefWidth="100" onAction="#handleSave"
+            style="-fx-background-color: #3e3e3e; -fx-text-fill: white;"/>
+    <Button text="Cancel" layoutX="290" layoutY="510" prefWidth="100" onAction="#handleCancel"
+            style="-fx-background-color: #555; -fx-text-fill: white;"/>
+    <Button text="Random Fill" layoutX="400" layoutY="510" prefWidth="100" onAction="#handleRandomFill"
+            style="-fx-background-color: #2a9d8f; -fx-text-fill: white;"/>
+</AnchorPane>
