@@ -35,23 +35,35 @@
                 <!-- IV row -->
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Button text="Generate IV" onAction="#IVGeneration"
-                            prefWidth="130" prefHeight="36" styleClass="btn-secondary"/>
+                            prefWidth="130" prefHeight="36" styleClass="btn-secondary">
+                        <tooltip><Tooltip text="Generate a random 8-byte Initialization Vector (IV) for AES-CBC"/></tooltip>
+                    </Button>
                     <TextField fx:id="ivDisplayField"
                                promptText="Initialization Vector (IV)"
                                styleClass="form-field" HBox.hgrow="ALWAYS"/>
-                    <Button text="Copy" onAction="#copyIv" prefWidth="64" styleClass="btn-ghost"/>
-                    <Button text="Save" onAction="#saveIv"  prefWidth="64" styleClass="btn-ghost"/>
+                    <Button text="Copy" onAction="#copyIv" prefWidth="64" styleClass="btn-ghost">
+                        <tooltip><Tooltip text="Copy IV to clipboard"/></tooltip>
+                    </Button>
+                    <Button text="Save" onAction="#saveIv"  prefWidth="64" styleClass="btn-ghost">
+                        <tooltip><Tooltip text="Save IV to session memory for use on the Encryption screen"/></tooltip>
+                    </Button>
                 </HBox>
 
                 <!-- Key row -->
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Button text="Generate Key" onAction="#KeyGeneration"
-                            prefWidth="130" prefHeight="36" styleClass="btn-secondary"/>
+                            prefWidth="130" prefHeight="36" styleClass="btn-secondary">
+                        <tooltip><Tooltip text="Generate a random 256-bit AES encryption key"/></tooltip>
+                    </Button>
                     <TextField fx:id="ikDisplayField"
                                promptText="AES-256 Encryption Key"
                                styleClass="form-field" HBox.hgrow="ALWAYS"/>
-                    <Button text="Copy" onAction="#copyKey" prefWidth="64" styleClass="btn-ghost"/>
-                    <Button text="Save" onAction="#saveKey"  prefWidth="64" styleClass="btn-ghost"/>
+                    <Button text="Copy" onAction="#copyKey" prefWidth="64" styleClass="btn-ghost">
+                        <tooltip><Tooltip text="Copy key to clipboard"/></tooltip>
+                    </Button>
+                    <Button text="Save" onAction="#saveKey"  prefWidth="64" styleClass="btn-ghost">
+                        <tooltip><Tooltip text="Save key to session memory for use on the Encryption screen"/></tooltip>
+                    </Button>
                 </HBox>
 
                 <Separator/>
