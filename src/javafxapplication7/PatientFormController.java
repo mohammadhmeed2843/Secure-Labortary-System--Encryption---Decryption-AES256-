@@ -65,20 +65,20 @@ public class PatientFormController {
         LocalDate testDate = testDatePicker.getValue();
         String status = statusBox.getValue();
 
-        // 🧠 Validate input
-        if (firstName.isEmpty() || lastName.isEmpty() || dob == null || patientNumber.isEmpty()
-                || testName == null || doctorName == null || technicianName == null || testDate == null
-                || status == null || encryptedFile == null) {
-            showAlert(Alert.AlertType.ERROR, "Please fill all fields and make sure the file is encrypted.");
-            return;
-        }
+        // Validate — report the first missing field by name for clarity
+        if (firstName.isEmpty())    { showAlert(Alert.AlertType.WARNING, "First name is required.");            return; }
+        if (lastName.isEmpty())     { showAlert(Alert.AlertType.WARNING, "Last name is required.");             return; }
+        if (dob == null)            { showAlert(Alert.AlertType.WARNING, "Date of birth is required.");         return; }
+        if (patientNumber.isEmpty()){ showAlert(Alert.AlertType.WARNING, "Patient number is required.");        return; }
+        if (testName == null)       { showAlert(Alert.AlertType.WARNING, "Please select a test type.");         return; }
+        if (doctorName == null)     { showAlert(Alert.AlertType.WARNING, "Please select a doctor.");            return; }
+        if (technicianName == null) { showAlert(Alert.AlertType.WARNING, "Please select a technician.");        return; }
+        if (testDate == null)       { showAlert(Alert.AlertType.WARNING, "Test date is required.");             return; }
+        if (status == null)         { showAlert(Alert.AlertType.WARNING, "Please select a status.");            return; }
+        if (encryptedFile == null)  { showAlert(Alert.AlertType.ERROR,   "No encrypted file found. Please encrypt a PDF first."); return; }
 
-        // 🔍 Debug print for file size
-        System.out.println("📦 Encrypted file size: " + encryptedFile.length + " bytes");
-
-        // 🚫 Optional: Prevent insert if file size is obviously wrong
-        if (encryptedFile.length > 1024 * 1024 * 5) { // 5MB limit (adjust as needed)
-            showAlert(Alert.AlertType.ERROR, "❌ Encrypted file is too large to be saved. Please check the file.");
+        if (encryptedFile.length > 1024 * 1024 * 10) { // 10 MB safety limit
+            showAlert(Alert.AlertType.ERROR, "Encrypted file exceeds the 10 MB limit. Please use a smaller PDF.");
             return;
         }
 
