@@ -1,21 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="javafxapplication7.LoginController"
-            prefWidth="400" prefHeight="300" style="-fx-background-color: #2d2d2d;">
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
+           xmlns="http://javafx.com/javafx/21"
+           fx:controller="javafxapplication7.LoginController"
+           prefWidth="480" prefHeight="420"
+           styleClass="screen-root">
 
-    <Text layoutX="120" layoutY="60" text="Secure Login"
-          style="-fx-fill: white; -fx-font-size: 22px; -fx-font-family: 'Helvetica Neue';"/>
+    <stylesheets><URL value="@styles.css"/></stylesheets>
 
-    <Label layoutX="50" layoutY="100" text="Username:" style="-fx-text-fill: white;"/>
-    <TextField fx:id="usernameField" layoutX="130" layoutY="95" prefWidth="200"/>
+    <!-- Centered login card -->
+    <VBox alignment="TOP_LEFT" spacing="6" maxWidth="360" styleClass="login-card">
 
-    <Label layoutX="50" layoutY="150" text="Password:" style="-fx-text-fill: white;"/>
-    <PasswordField fx:id="passwordField" layoutX="130" layoutY="145" prefWidth="200"/>
+        <!-- Icon + branding -->
+        <Label text="&#128274;" styleClass="login-icon-label"/>
+        <Label text="Secure Medical System" styleClass="login-title"/>
+        <Label text="Sign in to access the portal" styleClass="login-hint"/>
 
-    <Button text="Login" layoutX="150" layoutY="210" prefWidth="100" onAction="#handleLogin"
-            style="-fx-background-color: #3e3e3e; -fx-text-fill: white;"/>
-</AnchorPane>
+        <!-- Divider -->
+        <Separator>
+            <VBox.margin><Insets top="4" bottom="12"/></VBox.margin>
+        </Separator>
+
+        <!-- Username -->
+        <Label text="USERNAME" styleClass="field-label"/>
+        <TextField fx:id="usernameField"
+                   promptText="Enter your username"
+                   styleClass="form-field"
+                   maxWidth="Infinity">
+            <VBox.margin><Insets top="4"/></VBox.margin>
+        </TextField>
+
+        <!-- Password -->
+        <Label text="PASSWORD" styleClass="field-label">
+            <VBox.margin><Insets top="14"/></VBox.margin>
+        </Label>
+        <PasswordField fx:id="passwordField"
+                       promptText="Enter your password"
+                       styleClass="form-field"
+                       maxWidth="Infinity">
+            <VBox.margin><Insets top="4"/></VBox.margin>
+        </PasswordField>
+
+        <!-- Sign In -->
+        <Button text="Sign In"
+                onAction="#handleLogin"
+                maxWidth="Infinity"
+                prefHeight="40"
+                styleClass="btn-primary"
+                defaultButton="true">
+            <VBox.margin><Insets top="22"/></VBox.margin>
+        </Button>
+
+    </VBox>
+</StackPane>

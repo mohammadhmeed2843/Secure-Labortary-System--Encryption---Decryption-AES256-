@@ -1,54 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane prefHeight="500.0" prefWidth="700.0"
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="javafxapplication7.OpenDecryptionController"
-            style="-fx-background-color:#2d2d2d">
+            prefWidth="760" prefHeight="500"
+            styleClass="screen-root">
 
-    <!-- Header -->
-    <Text layoutX="213" layoutY="40" text="Decryption Page"
-          style="-fx-fill:white;-fx-font-size:26;-fx-font-family:'Helvetica Neue';-fx-font-weight:bold"/>
+    <stylesheets><URL value="@styles.css"/></stylesheets>
 
-    <!-- Patient Selection -->
-    <Label text="Select Patient:" layoutX="32" layoutY="90"
-           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
-    <ComboBox fx:id="patientComboBox" layoutX="170" layoutY="85" prefWidth="330"
-              onAction="#handlePatientSelect"/>
+    <!-- ── TOP BAR ── -->
+    <top>
+        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="16">
+            <Button text="&#8592; Back" onAction="#backToHomePage" styleClass="btn-ghost"/>
+            <Separator orientation="VERTICAL"
+                       style="-fx-background-color:#252d3d; -fx-pref-height:28;"/>
+            <VBox spacing="2">
+                <Label text="Decrypt Patient File" styleClass="page-title"/>
+                <Label text="Restore an encrypted medical PDF from the database" styleClass="page-subtitle"/>
+            </VBox>
+        </HBox>
+    </top>
 
-    <!-- Key -->
-    <Label text="Decryption Key:" layoutX="32" layoutY="140"
-           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
-    <TextField fx:id="keyTextField" layoutX="170" layoutY="135" prefWidth="270"
-               promptText="Base64 Key" styleClass="dark-field"/>
-    <Button text="Paste" layoutX="450" layoutY="135" prefWidth="60"
-            onAction="#pasteKey" styleClass="small-btn"/>
+    <!-- ── CENTER ── -->
+    <center>
+        <VBox spacing="14" style="-fx-padding: 20 24;">
 
-    <!-- IV -->
-    <Label text="Initialization Vector (IV):" layoutX="32" layoutY="190"
-           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
-    <TextField fx:id="ivTextField" layoutX="260" layoutY="185" prefWidth="180"
-               promptText="Base64 IV" styleClass="dark-field"/>
-    <Button text="Paste" layoutX="450" layoutY="185" prefWidth="60"
-            onAction="#pasteIv" styleClass="small-btn"/>
+            <!-- Patient Selection -->
+            <VBox styleClass="card" spacing="12">
+                <Label text="PATIENT" styleClass="section-label"/>
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Label text="Select Patient"
+                           style="-fx-text-fill:#8892aa; -fx-font-size:12px; -fx-font-weight:bold;"
+                           prefWidth="110"/>
+                    <ComboBox fx:id="patientComboBox"
+                              onAction="#handlePatientSelect"
+                              maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                              promptText="Choose a patient to load their encrypted file..."/>
+                </HBox>
+            </VBox>
 
-    <!-- Output Folder -->
-    <Label text="Output Folder:" layoutX="32" layoutY="240"
-           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
-    <TextField fx:id="outputFolderField" layoutX="170" layoutY="235" prefWidth="270"
-               promptText="Where to save the file" styleClass="dark-field"/>
-    <Button text="Browse" layoutX="450" layoutY="235" prefWidth="60"
-            onAction="#handleSelectFolder" styleClass="small-btn"/>
+            <!-- Decryption Keys -->
+            <VBox styleClass="card" spacing="12">
+                <Label text="DECRYPTION KEYS" styleClass="section-label"/>
 
-    <!-- Decrypt Button -->
-    <Button text="Decrypt" layoutX="280" layoutY="300" prefWidth="140" prefHeight="50"
-            onAction="#handleDecrypt" style="-fx-background-color:#2a9d8f;-fx-text-fill:white"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Key" prefWidth="40"
+                           style="-fx-text-fill:#8892aa; -fx-font-size:12px; -fx-font-weight:bold;"/>
+                    <TextField fx:id="keyTextField"
+                               promptText="Base64 AES-256 key"
+                               styleClass="form-field" HBox.hgrow="ALWAYS"/>
+                    <Button text="Paste" onAction="#pasteKey"
+                            prefWidth="70" styleClass="btn-ghost"/>
+                </HBox>
 
-    <!-- Back Button -->
-    <Button text="Back" layoutX="20" layoutY="440" prefWidth="100"
-            onAction="#backToHomePage" styleClass="main-btn"/>
-</AnchorPane>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="IV" prefWidth="40"
+                           style="-fx-text-fill:#8892aa; -fx-font-size:12px; -fx-font-weight:bold;"/>
+                    <TextField fx:id="ivTextField"
+                               promptText="Hex initialization vector"
+                               styleClass="form-field" HBox.hgrow="ALWAYS"/>
+                    <Button text="Paste" onAction="#pasteIv"
+                            prefWidth="70" styleClass="btn-ghost"/>
+                </HBox>
+            </VBox>
+
+            <!-- Output Folder -->
+            <VBox styleClass="card" spacing="10">
+                <Label text="OUTPUT FOLDER" styleClass="section-label"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="outputFolderField"
+                               promptText="Where to save the decrypted PDF"
+                               styleClass="form-field" HBox.hgrow="ALWAYS"
+                               editable="false"/>
+                    <Button text="Browse" onAction="#handleSelectFolder"
+                            prefWidth="100" prefHeight="36" styleClass="btn-secondary"/>
+                </HBox>
+            </VBox>
+
+            <!-- Action -->
+            <Region VBox.vgrow="ALWAYS"/>
+            <HBox alignment="CENTER_RIGHT">
+                <Button text="&#128275;  Decrypt &amp; Export PDF"
+                        onAction="#handleDecrypt"
+                        prefHeight="42" styleClass="btn-primary"/>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

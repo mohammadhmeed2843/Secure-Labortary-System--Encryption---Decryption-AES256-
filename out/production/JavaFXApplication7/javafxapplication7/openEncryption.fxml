@@ -1,59 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Text?>
 <?import java.net.URL?>
-<AnchorPane prefHeight="500.0" prefWidth="700.0"
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="javafxapplication7.openEncryptionController"
-            style="-fx-background-color:#2d2d2d">
+            prefWidth="760" prefHeight="530"
+            styleClass="screen-root">
 
-    <!-- Header -->
-    <Text layoutX="203" layoutY="60" text="Encryption Page"
-          style="-fx-fill:white;-fx-font-size:28;-fx-font-family:'Helvetica Neue';-fx-font-weight:bold"/>
+    <stylesheets><URL value="@styles.css"/></stylesheets>
 
-    <!-- Input PDFs -->
-    <Label text="Input PDF(s):" layoutX="22" layoutY="100"
-           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
-    <TextField fx:id="inputFolderTextField" layoutX="123" layoutY="95" prefWidth="370"
-               promptText="Select PDF file(s)" styleClass="dark-field"/>
-    <Button text="Browse" layoutX="510" layoutY="95" prefWidth="140"
-            onAction="#browseInputFolder" styleClass="main-btn"/>
-    <Button text="Back" layoutX="15" layoutY="430" prefWidth="100"
-            onAction="#backToHomePage" styleClass="main-btn"/>
-    <!-- Key -->
-    <Label text="Encryption Key:" layoutX="22" layoutY="155"
-           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
-    <TextField fx:id="keyTextField" layoutX="150" layoutY="150" prefWidth="300"
-               promptText="Key" styleClass="dark-field"/>
-    <Button text="Paste" layoutX="460" layoutY="150" prefWidth="60"
-            onAction="#pasteKey" styleClass="small-btn"/>
+    <!-- ── TOP BAR ── -->
+    <top>
+        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="16">
+            <Button text="&#8592; Back" onAction="#backToHomePage" styleClass="btn-ghost"/>
+            <Separator orientation="VERTICAL"
+                       style="-fx-background-color:#252d3d; -fx-pref-height:28;"/>
+            <VBox spacing="2">
+                <Label text="Encrypt PDF File" styleClass="page-title"/>
+                <Label text="AES-256 CBC encryption for medical documents" styleClass="page-subtitle"/>
+            </VBox>
+        </HBox>
+    </top>
 
-    <!-- IV -->
-    <Label text="Initialization Vector (IV):" layoutX="22" layoutY="210"
-           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
-    <TextField fx:id="ivTextField" layoutX="235" layoutY="205" prefWidth="215"
-               promptText="IV" styleClass="dark-field"/>
-    <Button text="Paste" layoutX="460" layoutY="205" prefWidth="60"
-            onAction="#pasteIv" styleClass="small-btn"/>
+    <!-- ── CENTER ── -->
+    <center>
+        <VBox spacing="14" style="-fx-padding: 20 24;">
 
-    <!-- Output folder -->
-    <Label text="Output Folder:" layoutX="22" layoutY="265"
-           style="-fx-text-fill:white;-fx-font-size:16;-fx-font-weight:bold"/>
-    <TextField fx:id="outputFolderTextField" layoutX="150" layoutY="260" prefWidth="300"
-               promptText="Output folder" styleClass="dark-field"/>
-    <Button text="Select Folder" layoutX="460" layoutY="260" prefWidth="140"
-            onAction="#browseOutputFolder" styleClass="main-btn"/>
+            <!-- Step indicators -->
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <Label text="&#9312; Select File"
+                       style="-fx-text-fill:#3b82f6; -fx-font-weight:bold; -fx-font-size:12px;"/>
+                <Label text="&#8250;" style="-fx-text-fill:#252d3d; -fx-font-size:14px;"/>
+                <Label text="&#9313; Enter Keys"
+                       style="-fx-text-fill:#5a6480; -fx-font-size:12px;"/>
+                <Label text="&#8250;" style="-fx-text-fill:#252d3d; -fx-font-size:14px;"/>
+                <Label text="&#9314; Output &amp; Encrypt"
+                       style="-fx-text-fill:#5a6480; -fx-font-size:12px;"/>
+            </HBox>
 
-    <!-- Encrypt + Back -->
-    <Button layoutX="298.0" layoutY="296.0" onAction="#encryptFileAndHold"
-            prefHeight="50.0" prefWidth="180.0" text="Encrypt"
-            style="-fx-background-color: #3e3e3e; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 6;"/>
+            <!-- 1 — File Selection -->
+            <VBox styleClass="card" spacing="10">
+                <Label text="PDF FILE" styleClass="section-label"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="inputFolderTextField"
+                               promptText="No file selected — click Browse"
+                               styleClass="form-field" HBox.hgrow="ALWAYS"
+                               editable="false"/>
+                    <Button text="Browse Files" onAction="#browseInputFolder"
+                            prefWidth="130" prefHeight="36" styleClass="btn-primary"/>
+                </HBox>
+            </VBox>
 
+            <!-- 2 — Keys -->
+            <VBox styleClass="card" spacing="12">
+                <Label text="ENCRYPTION KEYS" styleClass="section-label"/>
 
-    <stylesheets>
-        <URL value="@styles.css"/>
-    </stylesheets>
-</AnchorPane>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Key" styleClass="field-label" prefWidth="40"
+                           style="-fx-text-fill:#8892aa; -fx-font-size:12px; -fx-font-weight:bold;"/>
+                    <TextField fx:id="keyTextField"
+                               promptText="Base64 AES-256 key"
+                               styleClass="form-field" HBox.hgrow="ALWAYS"/>
+                    <Button text="Paste" onAction="#pasteKey"
+                            prefWidth="70" styleClass="btn-ghost"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="IV" styleClass="field-label" prefWidth="40"
+                           style="-fx-text-fill:#8892aa; -fx-font-size:12px; -fx-font-weight:bold;"/>
+                    <TextField fx:id="ivTextField"
+                               promptText="Hex initialization vector"
+                               styleClass="form-field" HBox.hgrow="ALWAYS"/>
+                    <Button text="Paste" onAction="#pasteIv"
+                            prefWidth="70" styleClass="btn-ghost"/>
+                </HBox>
+            </VBox>
+
+            <!-- 3 — Output Folder -->
+            <VBox styleClass="card" spacing="10">
+                <Label text="OUTPUT FOLDER" styleClass="section-label"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="outputFolderTextField"
+                               promptText="Where to save the .menc encrypted file"
+                               styleClass="form-field" HBox.hgrow="ALWAYS"
+                               editable="false"/>
+                    <Button text="Browse Folder" onAction="#browseOutputFolder"
+                            prefWidth="130" prefHeight="36" styleClass="btn-secondary"/>
+                </HBox>
+            </VBox>
+
+            <!-- Action -->
+            <Region VBox.vgrow="ALWAYS"/>
+            <HBox alignment="CENTER_RIGHT">
+                <Button text="&#128272;  Encrypt &amp; Save Patient Record"
+                        onAction="#encryptFileAndHold"
+                        prefHeight="42" styleClass="btn-success"/>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

@@ -12,8 +12,8 @@ public class JavaFXApplication7 extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));  // Load Login.fxml first
-        primaryStage.setTitle("File Encryption and Decryption Project");
-        primaryStage.setScene(new Scene(root, 400, 300));
+        primaryStage.setTitle("Secure Medical File System");
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 

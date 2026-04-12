@@ -1,63 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane prefWidth="700.0" prefHeight="620.0"
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="javafxapplication7.HomePageController"
-            style="-fx-background-color:#2d2d2d">
+            prefWidth="820" prefHeight="580"
+            styleClass="screen-root">
 
-    <!-- Header -->
-    <Text layoutX="70" layoutY="50" text="File Encryption and Decryption Project"
-          style="-fx-fill:white;-fx-font-size:28px;-fx-font-family:'Helvetica Neue';-fx-font-weight:bold"/>
+    <stylesheets><URL value="@styles.css"/></stylesheets>
 
-    
+    <!-- ── TOP BAR ── -->
+    <top>
+        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="14">
+            <Label text="&#128138;" style="-fx-font-size:22px;"/>
+            <VBox spacing="2">
+                <Label text="Secure Medical File System" styleClass="page-title"/>
+                <Label text="Key Management &amp; Encryption Dashboard" styleClass="page-subtitle"/>
+            </VBox>
+        </HBox>
+    </top>
 
-    <!-- == IV row == -->
-    <Button text="Generate IV" layoutX="70" layoutY="130"
-            onAction="#IVGeneration" prefWidth="160" prefHeight="45"
-            styleClass="main-btn"/>
-    <TextField fx:id="ivDisplayField" layoutX="250" layoutY="130" prefWidth="280"
-               promptText="IV" styleClass="dark-field"/>
-    <Button text="Copy" layoutX="540" layoutY="130" prefWidth="60"
-            onAction="#copyIv" styleClass="small-btn"/>
-    <Button text="Save" layoutX="610" layoutY="130" prefWidth="60"
-            onAction="#saveIv" styleClass="small-btn"/>
+    <!-- ── CENTER CONTENT ── -->
+    <center>
+        <VBox spacing="18" style="-fx-padding: 22 24;">
 
-    <!-- == Key row == -->
-    <Button text="Generate Key" layoutX="70" layoutY="200"
-            onAction="#KeyGeneration" prefWidth="160" prefHeight="45"
-            styleClass="main-btn"/>
-    <TextField fx:id="ikDisplayField" layoutX="250" layoutY="200" prefWidth="280"
-               promptText="Key" styleClass="dark-field"/>
-    <Button text="Copy" layoutX="540" layoutY="200" prefWidth="60"
-            onAction="#copyKey" styleClass="small-btn"/>
-    <Button text="Save" layoutX="610" layoutY="200" prefWidth="60"
-            onAction="#saveKey" styleClass="small-btn"/>
+            <!-- KEY GENERATION CARD -->
+            <VBox styleClass="card" spacing="14">
+                <Label text="CRYPTOGRAPHIC KEYS" styleClass="section-label"/>
 
-    <!-- IV+Key combined -->
-    <TextField fx:id="resultTextField" layoutX="70" layoutY="280" prefWidth="460"
-               promptText="IV and Key" styleClass="dark-field"/>
-    <Button text="Save to File" layoutX="540" layoutY="280" prefWidth="130"
-            onAction="#saveToFile" styleClass="small-btn"/>
+                <!-- IV row -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button text="Generate IV" onAction="#IVGeneration"
+                            prefWidth="130" prefHeight="36" styleClass="btn-secondary"/>
+                    <TextField fx:id="ivDisplayField"
+                               promptText="Initialization Vector (IV)"
+                               styleClass="form-field" HBox.hgrow="ALWAYS"/>
+                    <Button text="Copy" onAction="#copyIv" prefWidth="64" styleClass="btn-ghost"/>
+                    <Button text="Save" onAction="#saveIv"  prefWidth="64" styleClass="btn-ghost"/>
+                </HBox>
 
-    <!-- Navigation buttons (more vertical space added) -->
-    <Button text="Encryption" layoutX="170" layoutY="370"
-            onAction="#openEncryption" prefWidth="150" prefHeight="55"
-            styleClass="main-btn"/>
-    <Button text="Decryption" layoutX="380" layoutY="370"
-            onAction="#openDecryption" prefWidth="150" prefHeight="55"
-            styleClass="main-btn"/>
+                <!-- Key row -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button text="Generate Key" onAction="#KeyGeneration"
+                            prefWidth="130" prefHeight="36" styleClass="btn-secondary"/>
+                    <TextField fx:id="ikDisplayField"
+                               promptText="AES-256 Encryption Key"
+                               styleClass="form-field" HBox.hgrow="ALWAYS"/>
+                    <Button text="Copy" onAction="#copyKey" prefWidth="64" styleClass="btn-ghost"/>
+                    <Button text="Save" onAction="#saveKey"  prefWidth="64" styleClass="btn-ghost"/>
+                </HBox>
 
-    <!-- Footer -->
-    <Text layoutX="200" layoutY="590" text="Secure Laboratory Data System"
-          style="-fx-fill:#7f8c8d;-fx-font-size:25px;-fx-font-family:'Helvetica Neue'"/>
+                <Separator/>
 
-    <stylesheets>
-        <URL value="@styles.css"/>
-    </stylesheets>
-</AnchorPane>
+                <!-- Combined / export row -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Preview" styleClass="field-label" prefWidth="60"/>
+                    <TextField fx:id="resultTextField"
+                               promptText="IV + Key combined preview"
+                               styleClass="form-field" HBox.hgrow="ALWAYS"
+                               editable="false"
+                               style="-fx-font-size:11px; -fx-text-fill:#8892aa;"/>
+                    <Button text="Save to File" onAction="#saveToFile"
+                            prefWidth="110" styleClass="btn-primary"/>
+                </HBox>
+            </VBox>
+
+            <!-- NAVIGATION SECTION LABEL -->
+            <Label text="ACTIONS" styleClass="section-label">
+                <VBox.margin><Insets top="4"/></VBox.margin>
+            </Label>
+
+            <!-- Two nav tiles -->
+            <HBox spacing="14">
+
+                <!-- Encrypt tile -->
+                <Button styleClass="nav-card" onAction="#openEncryption"
+                        maxWidth="Infinity" prefHeight="120" HBox.hgrow="ALWAYS">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="8" style="-fx-padding:0;">
+                            <Label text="&#128272;" style="-fx-font-size:30px;"/>
+                            <Label text="Encrypt Files"
+                                   style="-fx-text-fill:#e8eaf0; -fx-font-size:15px; -fx-font-weight:bold;"/>
+                            <Label text="Secure PDF documents with AES-256"
+                                   style="-fx-text-fill:#5a6480; -fx-font-size:11px;"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+                <!-- Decrypt tile -->
+                <Button styleClass="nav-card" onAction="#openDecryption"
+                        maxWidth="Infinity" prefHeight="120" HBox.hgrow="ALWAYS">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="8" style="-fx-padding:0;">
+                            <Label text="&#128275;" style="-fx-font-size:30px;"/>
+                            <Label text="Decrypt Files"
+                                   style="-fx-text-fill:#e8eaf0; -fx-font-size:15px; -fx-font-weight:bold;"/>
+                            <Label text="Restore encrypted patient records"
+                                   style="-fx-text-fill:#5a6480; -fx-font-size:11px;"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+            </HBox>
+
+            <!-- Footer -->
+            <Region VBox.vgrow="ALWAYS"/>
+            <Label text="Secure Laboratory Data System  ·  AES-256 CBC  ·  PostgreSQL"
+                   style="-fx-text-fill:#252d3d; -fx-font-size:11px;"
+                   maxWidth="Infinity" alignment="CENTER"/>
+
+        </VBox>
+    </center>
+
+</BorderPane>
