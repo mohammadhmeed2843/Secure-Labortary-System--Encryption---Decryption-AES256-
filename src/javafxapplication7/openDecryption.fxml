@@ -15,20 +15,19 @@
 
     <!-- ── INNER HEADER ── -->
     <VBox style="-fx-padding: 28 28 20 28; -fx-background-color: #0f1117;">
-        <Label text="Decrypt Patient File"
+        <Label text="Export Patient File"
                style="-fx-text-fill:#e8eaf0; -fx-font-size:22px; -fx-font-weight:bold;"/>
-        <Label text="Restore an encrypted medical PDF from the database"
+        <Label text="Select a record and an output folder — decryption is automatic"
                style="-fx-text-fill:#3d4f65; -fx-font-size:12px; -fx-padding: 4 0 0 0;"/>
 
-        <!-- Step breadcrumb -->
         <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 12 0 0 0;">
-            <Label text="&#9312; Select Patient"
+            <Label text="① Select Record"
                    style="-fx-text-fill:#3b82f6; -fx-font-weight:bold; -fx-font-size:11px;"/>
-            <Label text="&#8250;" style="-fx-text-fill:#1e2b3a; -fx-font-size:13px;"/>
-            <Label text="&#9313; Enter Keys"
+            <Label text="›" style="-fx-text-fill:#1e2b3a; -fx-font-size:13px;"/>
+            <Label text="② Choose Output Folder"
                    style="-fx-text-fill:#3d4f65; -fx-font-size:11px;"/>
-            <Label text="&#8250;" style="-fx-text-fill:#1e2b3a; -fx-font-size:13px;"/>
-            <Label text="&#9314; Output &amp; Decrypt"
+            <Label text="›" style="-fx-text-fill:#1e2b3a; -fx-font-size:13px;"/>
+            <Label text="③ Export PDF"
                    style="-fx-text-fill:#3d4f65; -fx-font-size:11px;"/>
         </HBox>
     </VBox>
@@ -40,44 +39,16 @@
         <content>
             <VBox spacing="14" style="-fx-padding: 0 28 24 28;">
 
-                <!-- 1 — Patient Selection -->
+                <!-- Record Selection -->
                 <VBox styleClass="card" spacing="10">
-                    <Label text="PATIENT" styleClass="section-label"/>
-                    <HBox spacing="12" alignment="CENTER_LEFT">
-                        <Label text="Select Patient"
-                               style="-fx-text-fill:#5a6480; -fx-font-size:12px; -fx-font-weight:bold;"
-                               prefWidth="110"/>
-                        <ComboBox fx:id="patientComboBox"
-                                  onAction="#handlePatientSelect"
-                                  maxWidth="Infinity" HBox.hgrow="ALWAYS"
-                                  promptText="Choose a patient to load their encrypted file..."/>
-                    </HBox>
+                    <Label text="MEDICAL RECORD" styleClass="section-label"/>
+                    <ComboBox fx:id="patientComboBox"
+                              onAction="#handleRecordSelect"
+                              maxWidth="Infinity"
+                              promptText="Select a record to export..."/>
                 </VBox>
 
-                <!-- 2 — Decryption Keys -->
-                <VBox styleClass="card" spacing="12">
-                    <Label text="DECRYPTION KEYS" styleClass="section-label"/>
-
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Label text="Key" prefWidth="36"
-                               style="-fx-text-fill:#5a6480; -fx-font-size:12px; -fx-font-weight:bold;"/>
-                        <TextField fx:id="keyTextField"
-                                   promptText="Base64 AES-256 key"
-                                   styleClass="form-field" HBox.hgrow="ALWAYS"/>
-                        <Button text="Paste" onAction="#pasteKey" prefWidth="70" styleClass="btn-ghost"/>
-                    </HBox>
-
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Label text="IV" prefWidth="36"
-                               style="-fx-text-fill:#5a6480; -fx-font-size:12px; -fx-font-weight:bold;"/>
-                        <TextField fx:id="ivTextField"
-                                   promptText="Hex initialization vector"
-                                   styleClass="form-field" HBox.hgrow="ALWAYS"/>
-                        <Button text="Paste" onAction="#pasteIv" prefWidth="70" styleClass="btn-ghost"/>
-                    </HBox>
-                </VBox>
-
-                <!-- 3 — Output Folder -->
+                <!-- Output Folder -->
                 <VBox styleClass="card" spacing="10">
                     <Label text="OUTPUT FOLDER" styleClass="section-label"/>
                     <HBox spacing="10" alignment="CENTER_LEFT">
@@ -92,8 +63,8 @@
 
                 <!-- Action -->
                 <HBox alignment="CENTER_RIGHT" style="-fx-padding: 8 0 0 0;">
-                    <Button text="&#128275;  Decrypt &amp; Export PDF"
-                            onAction="#handleDecrypt"
+                    <Button text="Export PDF  ›"
+                            onAction="#handleExport"
                             prefHeight="42" styleClass="btn-primary"/>
                 </HBox>
 

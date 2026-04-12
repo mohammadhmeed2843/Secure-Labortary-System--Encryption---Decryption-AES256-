@@ -7,72 +7,52 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafxapplication7.model.FileRecord;
+import javafxapplication7.service.FileService;
+import javafxapplication7.session.Session;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.Base64;
+import java.util.List;
 
+/**
+ * Controller for the "Export Medical File" screen.
+ *
+ * Loads all accessible records, lets the user pick one, choose an output folder,
+ * and click Export. FileService handles all decryption transparently.
+ * No keys, no IVs, no cipher code belongs here.
+ */
 public class OpenDecryptionController {
 
     @FXML private ComboBox<String> patientComboBox;
-    @FXML private TextField keyTextField;
-    @FXML private TextField ivTextField;
-    @FXML private TextField outputFolderField;
+    @FXML private TextField        outputFolderField;
 
-    private byte[] encryptedFileBytes;
+    private List<FileRecord> records;
+    private int              selectedFileId = -1;
 
     @FXML
     public void initialize() {
-        try (Connection conn = DatabaseConnection.connect()) {
-            String query = "SELECT patient_number, first_name, last_name FROM patients";
-            try (PreparedStatement ps = conn.prepareStatement(query);
-                 ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String display = rs.getString("first_name") + " " + rs.getString("last_name") +
-                            " (P#" + rs.getString("patient_number") + ")";
-                    patientComboBox.getItems().add(display);
-                }
+        try {
+            // DOCTOR sees only READY files; ADMIN sees all
+            if (Session.hasRole(javafxapplication7.model.Role.DOCTOR)) {
+                records = FileService.listAll().stream()
+                        .filter(r -> "READY".equals(r.getStatus()))
+                        .toList();
+            } else {
+                records = FileService.listAll();
             }
+            for (FileRecord r : records) patientComboBox.getItems().add(r.toDisplayString());
         } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Failed to load patient list: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Failed to load records: " + e.getMessage());
         }
     }
 
     @FXML
-    private void handlePatientSelect(ActionEvent event) {
-        String selected = patientComboBox.getValue();
-        if (selected == null || !selected.contains("P#")) {
-            showAlert(Alert.AlertType.WARNING, "Please select a valid patient.");
-            return;
-        }
-
-        String patientNumber = selected.split("P#")[1].replace(")", "").trim();
-
-        try (Connection conn = DatabaseConnection.connect()) {
-            String sql = "SELECT encrypted_file FROM test_records WHERE patient_number = ? ORDER BY test_date DESC LIMIT 1";
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, patientNumber);
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    encryptedFileBytes = rs.getBytes("encrypted_file");
-                    showAlert(Alert.AlertType.INFORMATION, "Encrypted file loaded for patient.");
-                } else {
-                    showAlert(Alert.AlertType.WARNING, "No encrypted file found for this patient.");
-                }
-            }
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Error loading file: " + e.getMessage());
+    private void handleRecordSelect(ActionEvent event) {
+        int idx = patientComboBox.getSelectionModel().getSelectedIndex();
+        if (idx >= 0 && idx < records.size()) {
+            selectedFileId = records.get(idx).getFileId();
         }
     }
-
-    @FXML private void pasteKey() { keyTextField.setText(CryptoStore.getKey()); }
-    @FXML private void pasteIv()  { ivTextField.setText(CryptoStore.getIv());   }
 
     @FXML
     private void handleSelectFolder(ActionEvent event) {
@@ -85,17 +65,9 @@ public class OpenDecryptionController {
     }
 
     @FXML
-    private void handleDecrypt(ActionEvent event) {
-        if (encryptedFileBytes == null) {
-            showAlert(Alert.AlertType.WARNING, "Please select a patient and load their file first.");
-            return;
-        }
-        if (keyTextField.getText().trim().isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Decryption key is required.");
-            return;
-        }
-        if (ivTextField.getText().trim().isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Initialization vector (IV) is required.");
+    private void handleExport(ActionEvent event) {
+        if (selectedFileId < 0) {
+            showAlert(Alert.AlertType.WARNING, "Please select a record first.");
             return;
         }
         if (outputFolderField.getText().trim().isEmpty()) {
@@ -104,31 +76,20 @@ public class OpenDecryptionController {
         }
 
         try {
-            byte[] key = Base64.getDecoder().decode(keyTextField.getText().trim());
-            byte[] iv  = ivTextField.getText().trim().getBytes();
-
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
-
-            byte[] decrypted = cipher.doFinal(encryptedFileBytes);
-
-            File outFile = new File(outputFolderField.getText().trim(), "Decrypted_File.pdf");
-            try (FileOutputStream fos = new FileOutputStream(outFile)) {
-                fos.write(decrypted);
-            }
-
-            showAlert(Alert.AlertType.INFORMATION, "File decrypted and saved to:\n" + outFile.getAbsolutePath());
-
+            File outDir  = new File(outputFolderField.getText().trim());
+            File outFile = FileService.exportDecrypted(selectedFileId, outDir);
+            showAlert(Alert.AlertType.INFORMATION,
+                    "File exported successfully:\n" + outFile.getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Decryption failed: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Export failed: " + e.getMessage());
         }
     }
 
     private void showAlert(Alert.AlertType type, String message) {
-        Alert alert = new Alert(type);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        Alert a = new Alert(type);
+        a.setHeaderText(null);
+        a.setContentText(message);
+        a.showAndWait();
     }
 }
