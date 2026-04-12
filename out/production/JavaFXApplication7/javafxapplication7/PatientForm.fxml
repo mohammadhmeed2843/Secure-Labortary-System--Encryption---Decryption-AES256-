@@ -5,141 +5,121 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/21"
-            fx:controller="javafxapplication7.PatientFormController"
-            prefWidth="760" prefHeight="680"
-            styleClass="screen-root">
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="javafxapplication7.PatientFormController"
+      spacing="0"
+      styleClass="content-area">
 
     <stylesheets><URL value="@styles.css"/></stylesheets>
 
-    <!-- ── TOP BAR ── -->
-    <top>
-        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="12">
-            <Label text="&#128203;" style="-fx-font-size:20px;"/>
-            <VBox spacing="2">
-                <Label text="Patient &amp; Test Record" styleClass="page-title"/>
-                <Label text="Complete all fields — data will be saved to the database" styleClass="page-subtitle"/>
-            </VBox>
-        </HBox>
-    </top>
+    <!-- ── INNER HEADER ── -->
+    <VBox style="-fx-padding: 28 28 20 28; -fx-background-color: #0f1117;">
+        <Label text="Patient &amp; Test Record"
+               style="-fx-text-fill:#e8eaf0; -fx-font-size:22px; -fx-font-weight:bold;"/>
+        <Label text="Complete all fields — data will be saved to the database"
+               style="-fx-text-fill:#3d4f65; -fx-font-size:12px; -fx-padding: 4 0 0 0;"/>
 
-    <!-- ── CENTER ── -->
-    <center>
-        <VBox spacing="16" style="-fx-padding: 20 24;">
-
-            <!-- PATIENT INFORMATION -->
-            <VBox styleClass="card" spacing="14">
-                <Label text="PATIENT INFORMATION" styleClass="section-label"/>
-
-                <GridPane hgap="16" vgap="12" maxWidth="Infinity">
-                    <columnConstraints>
-                        <ColumnConstraints minWidth="130" maxWidth="130"/>
-                        <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
-                    </columnConstraints>
-
-                    <!-- First Name -->
-                    <Label text="First Name" styleClass="field-label"
-                           GridPane.columnIndex="0" GridPane.rowIndex="0"
-                           GridPane.valignment="CENTER"/>
-                    <TextField fx:id="firstNameField"
-                               promptText="Patient's first name"
-                               styleClass="form-field" maxWidth="Infinity"
-                               GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-
-                    <!-- Last Name -->
-                    <Label text="Last Name" styleClass="field-label"
-                           GridPane.columnIndex="0" GridPane.rowIndex="1"
-                           GridPane.valignment="CENTER"/>
-                    <TextField fx:id="lastNameField"
-                               promptText="Patient's last name"
-                               styleClass="form-field" maxWidth="Infinity"
-                               GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-
-                    <!-- Date of Birth -->
-                    <Label text="Date of Birth" styleClass="field-label"
-                           GridPane.columnIndex="0" GridPane.rowIndex="2"
-                           GridPane.valignment="CENTER"/>
-                    <DatePicker fx:id="dobPicker" maxWidth="Infinity"
-                                GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-
-                    <!-- Patient Number -->
-                    <Label text="Patient Number" styleClass="field-label"
-                           GridPane.columnIndex="0" GridPane.rowIndex="3"
-                           GridPane.valignment="CENTER"/>
-                    <TextField fx:id="patientNumberField"
-                               promptText="e.g. P1001"
-                               styleClass="form-field" maxWidth="Infinity"
-                               GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                </GridPane>
-            </VBox>
-
-            <!-- TEST DETAILS -->
-            <VBox styleClass="card" spacing="14">
-                <Label text="TEST DETAILS" styleClass="section-label"/>
-
-                <GridPane hgap="16" vgap="12" maxWidth="Infinity">
-                    <columnConstraints>
-                        <ColumnConstraints minWidth="130" maxWidth="130"/>
-                        <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
-                    </columnConstraints>
-
-                    <!-- Test Type -->
-                    <Label text="Test Type" styleClass="field-label"
-                           GridPane.columnIndex="0" GridPane.rowIndex="0"
-                           GridPane.valignment="CENTER"/>
-                    <ComboBox fx:id="testNameBox" maxWidth="Infinity"
-                              promptText="Select test type"
-                              GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-
-                    <!-- Doctor -->
-                    <Label text="Doctor" styleClass="field-label"
-                           GridPane.columnIndex="0" GridPane.rowIndex="1"
-                           GridPane.valignment="CENTER"/>
-                    <ComboBox fx:id="doctorBox" maxWidth="Infinity"
-                              promptText="Select doctor"
-                              GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-
-                    <!-- Technician -->
-                    <Label text="Technician" styleClass="field-label"
-                           GridPane.columnIndex="0" GridPane.rowIndex="2"
-                           GridPane.valignment="CENTER"/>
-                    <ComboBox fx:id="technicianBox" maxWidth="Infinity"
-                              promptText="Select technician"
-                              GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-
-                    <!-- Test Date -->
-                    <Label text="Test Date" styleClass="field-label"
-                           GridPane.columnIndex="0" GridPane.rowIndex="3"
-                           GridPane.valignment="CENTER"/>
-                    <DatePicker fx:id="testDatePicker" maxWidth="Infinity"
-                                GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-
-                    <!-- Status -->
-                    <Label text="Status" styleClass="field-label"
-                           GridPane.columnIndex="0" GridPane.rowIndex="4"
-                           GridPane.valignment="CENTER"/>
-                    <ComboBox fx:id="statusBox" maxWidth="Infinity"
-                              promptText="Select status"
-                              GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-                </GridPane>
-            </VBox>
-
-        </VBox>
-    </center>
-
-    <!-- ── BOTTOM ACTION BAR ── -->
-    <bottom>
-        <HBox styleClass="bottom-bar" alignment="CENTER_LEFT" spacing="12">
-            <Label text="&#128196; Encrypted File:"
-                   style="-fx-text-fill:#5a6480; -fx-font-size:12px;"/>
+        <!-- Encrypted file status bar -->
+        <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 12 0 0 0;">
+            <Label text="&#128196;"
+                   style="-fx-text-fill:#3b82f6; -fx-font-size:12px;"/>
+            <Label text="Encrypted File:"
+                   style="-fx-text-fill:#3d4f65; -fx-font-size:11px;"/>
             <Label fx:id="fileNameLabel" text="(none)"
-                   style="-fx-text-fill:#8892aa; -fx-font-size:12px;"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button text="Random Fill" onAction="#handleRandomFill" styleClass="btn-ghost"/>
-            <Button text="Cancel"      onAction="#handleCancel"     styleClass="btn-secondary"/>
-            <Button text="&#10003;  Save Record" onAction="#handleSave" styleClass="btn-success"/>
+                   style="-fx-text-fill:#60a5fa; -fx-font-size:11px; -fx-font-weight:bold;"/>
         </HBox>
-    </bottom>
+    </VBox>
 
-</BorderPane>
+    <!-- ── SCROLLABLE CONTENT ── -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                style="-fx-background-color: #0f1117; -fx-background: #0f1117; -fx-border-width:0;">
+        <content>
+            <VBox spacing="14" style="-fx-padding: 0 28 24 28;">
+
+                <!-- PATIENT INFORMATION -->
+                <VBox styleClass="card" spacing="14">
+                    <Label text="PATIENT INFORMATION" styleClass="section-label"/>
+
+                    <GridPane hgap="16" vgap="12" maxWidth="Infinity">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="130" maxWidth="130"/>
+                            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+                        </columnConstraints>
+
+                        <Label text="First Name" styleClass="field-label"
+                               GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.valignment="CENTER"/>
+                        <TextField fx:id="firstNameField" promptText="Patient's first name"
+                                   styleClass="form-field" maxWidth="Infinity"
+                                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <Label text="Last Name" styleClass="field-label"
+                               GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="CENTER"/>
+                        <TextField fx:id="lastNameField" promptText="Patient's last name"
+                                   styleClass="form-field" maxWidth="Infinity"
+                                   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                        <Label text="Date of Birth" styleClass="field-label"
+                               GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.valignment="CENTER"/>
+                        <DatePicker fx:id="dobPicker" maxWidth="Infinity"
+                                    GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                        <Label text="Patient Number" styleClass="field-label"
+                               GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.valignment="CENTER"/>
+                        <TextField fx:id="patientNumberField" promptText="e.g. P1001"
+                                   styleClass="form-field" maxWidth="Infinity"
+                                   GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    </GridPane>
+                </VBox>
+
+                <!-- TEST DETAILS -->
+                <VBox styleClass="card" spacing="14">
+                    <Label text="TEST DETAILS" styleClass="section-label"/>
+
+                    <GridPane hgap="16" vgap="12" maxWidth="Infinity">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="130" maxWidth="130"/>
+                            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+                        </columnConstraints>
+
+                        <Label text="Test Type" styleClass="field-label"
+                               GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.valignment="CENTER"/>
+                        <ComboBox fx:id="testNameBox" maxWidth="Infinity" promptText="Select test type"
+                                  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <Label text="Doctor" styleClass="field-label"
+                               GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="CENTER"/>
+                        <ComboBox fx:id="doctorBox" maxWidth="Infinity" promptText="Select doctor"
+                                  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                        <Label text="Technician" styleClass="field-label"
+                               GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.valignment="CENTER"/>
+                        <ComboBox fx:id="technicianBox" maxWidth="Infinity" promptText="Select technician"
+                                  GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                        <Label text="Test Date" styleClass="field-label"
+                               GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.valignment="CENTER"/>
+                        <DatePicker fx:id="testDatePicker" maxWidth="Infinity"
+                                    GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                        <Label text="Status" styleClass="field-label"
+                               GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.valignment="CENTER"/>
+                        <ComboBox fx:id="statusBox" maxWidth="Infinity" promptText="Select status"
+                                  GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                    </GridPane>
+                </VBox>
+
+                <!-- Action buttons -->
+                <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 8 0 0 0;">
+                    <Button text="Random Fill" onAction="#handleRandomFill" styleClass="btn-ghost"/>
+                    <Button text="Cancel"      onAction="#handleCancel"     styleClass="btn-secondary"/>
+                    <Button text="&#10003;  Save Record" onAction="#handleSave" styleClass="btn-success"
+                            prefHeight="38"/>
+                </HBox>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+
+</VBox>

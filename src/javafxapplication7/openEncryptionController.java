@@ -134,19 +134,11 @@ public class openEncryptionController implements Initializable {
                 }
             }
 
-            show(Alert.AlertType.INFORMATION, "✅ PDF encrypted in memory. Proceeding to patient record form.");
+            show(Alert.AlertType.INFORMATION, "✅ PDF encrypted. Please fill in the patient record.");
 
-            // 🔄 Open patient form and pass data
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/javafxapplication7/PatientForm.fxml"));
-            Parent formRoot = loader.load();
-
-            // Pass encrypted PDF to the PatientFormController
-            PatientFormController formController = loader.getController();
-            formController.setEncryptedFileData(encryptedData);
-
-            Stage stage = stage(event);
-            stage.setScene(new Scene(formRoot));
-            stage.show();
+            // Store encrypted data in CryptoStore; PatientFormController reads it from there
+            CryptoStore.saveEncryptedFile(encryptedData);
+            MainLayoutController.navigateTo("PatientForm.fxml");
 
         } catch (Exception e) {
             e.printStackTrace();
