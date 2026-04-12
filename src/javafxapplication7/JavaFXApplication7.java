@@ -13,7 +13,10 @@ public class JavaFXApplication7 extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));  // Load Login.fxml first
         primaryStage.setTitle("Secure Medical File System");
+        primaryStage.setMinWidth(420);
+        primaryStage.setMinHeight(360);
         primaryStage.setScene(new Scene(root));
+        primaryStage.centerOnScreen();
         primaryStage.show();
     }
 
