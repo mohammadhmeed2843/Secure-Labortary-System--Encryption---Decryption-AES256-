@@ -69,13 +69,13 @@ public class HomePageController {
 
     /* ----------  Navigation buttons  ---------- */
     @FXML
-    private void openEncryption(ActionEvent e) throws IOException {
-        switchScene("/javafxapplication7/openEncryption.fxml", e);
+    private void openEncryption(ActionEvent e) {
+        MainLayoutController.navigateToEncrypt();
     }
 
     @FXML
-    private void openDecryption(ActionEvent e) throws IOException {
-        switchScene("/javafxapplication7/OpenDecryption.fxml", e);
+    private void openDecryption(ActionEvent e) {
+        MainLayoutController.navigateToDecrypt();
     }
 
     /* ----------  Helpers  ---------- */

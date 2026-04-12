@@ -24,13 +24,15 @@ public class LoginController {
 
         if ("admin".equals(user) && "1234".equals(pass)) {
             try {
-                Parent home = FXMLLoader.load(getClass().getResource("/javafxapplication7/HomePage.fxml"));
+                // Load the persistent shell (sidebar + content area)
+                Parent shell = FXMLLoader.load(
+                        getClass().getResource("/javafxapplication7/MainLayout.fxml"));
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.setScene(new Scene(home));
+                stage.setScene(new Scene(shell));
                 stage.show();
             } catch (Exception e) {
                 e.printStackTrace();
-                showError("Failed to load the home screen. Please restart the application.");
+                showError("Failed to load the application. Please restart.");
             }
         } else {
             showError("Invalid username or password. Please try again.");

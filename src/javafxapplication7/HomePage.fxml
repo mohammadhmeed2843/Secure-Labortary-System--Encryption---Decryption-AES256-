@@ -5,127 +5,101 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/21"
-            fx:controller="javafxapplication7.HomePageController"
-            prefWidth="820" prefHeight="580"
-            styleClass="screen-root">
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="javafxapplication7.HomePageController"
+      spacing="0"
+      styleClass="content-area">
 
     <stylesheets><URL value="@styles.css"/></stylesheets>
 
-    <!-- ── TOP BAR ── -->
-    <top>
-        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="14">
-            <Label text="&#128138;" style="-fx-font-size:22px;"/>
-            <VBox spacing="2">
-                <Label text="Secure Medical File System" styleClass="page-title"/>
-                <Label text="Key Management &amp; Encryption Dashboard" styleClass="page-subtitle"/>
+    <!-- ── INNER HEADER ── -->
+    <VBox style="-fx-padding: 28 28 20 28; -fx-background-color: #0f1117;">
+        <Label text="Dashboard"
+               style="-fx-text-fill:#e8eaf0; -fx-font-size:22px; -fx-font-weight:bold;"/>
+        <Label text="Generate and manage your session encryption keys"
+               style="-fx-text-fill:#3d4f65; -fx-font-size:12px; -fx-padding: 4 0 0 0;"/>
+    </VBox>
+
+    <!-- ── SCROLLABLE CONTENT ── -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                style="-fx-background-color: #0f1117; -fx-background: #0f1117; -fx-border-width:0;">
+        <content>
+            <VBox spacing="16" style="-fx-padding: 0 28 28 28;">
+
+                <!-- KEY GENERATION CARD -->
+                <VBox styleClass="card" spacing="14">
+                    <Label text="CRYPTOGRAPHIC KEYS" styleClass="section-label"/>
+
+                    <!-- IV row -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="Generate IV" onAction="#IVGeneration"
+                                prefWidth="130" prefHeight="36" styleClass="btn-secondary">
+                            <tooltip><Tooltip text="Generate a random 8-byte Initialization Vector for AES-CBC"/></tooltip>
+                        </Button>
+                        <TextField fx:id="ivDisplayField"
+                                   promptText="Initialization Vector (IV)"
+                                   styleClass="form-field" HBox.hgrow="ALWAYS"/>
+                        <Button text="Copy" onAction="#copyIv" prefWidth="64" styleClass="btn-ghost">
+                            <tooltip><Tooltip text="Copy IV to clipboard"/></tooltip>
+                        </Button>
+                        <Button text="Save" onAction="#saveIv" prefWidth="64" styleClass="btn-ghost">
+                            <tooltip><Tooltip text="Save IV to session memory"/></tooltip>
+                        </Button>
+                    </HBox>
+
+                    <!-- Key row -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="Generate Key" onAction="#KeyGeneration"
+                                prefWidth="130" prefHeight="36" styleClass="btn-secondary">
+                            <tooltip><Tooltip text="Generate a random 256-bit AES encryption key"/></tooltip>
+                        </Button>
+                        <TextField fx:id="ikDisplayField"
+                                   promptText="AES-256 Encryption Key"
+                                   styleClass="form-field" HBox.hgrow="ALWAYS"/>
+                        <Button text="Copy" onAction="#copyKey" prefWidth="64" styleClass="btn-ghost">
+                            <tooltip><Tooltip text="Copy key to clipboard"/></tooltip>
+                        </Button>
+                        <Button text="Save" onAction="#saveKey" prefWidth="64" styleClass="btn-ghost">
+                            <tooltip><Tooltip text="Save key to session memory"/></tooltip>
+                        </Button>
+                    </HBox>
+
+                    <Separator/>
+
+                    <!-- Combined preview row -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Preview" styleClass="field-label" prefWidth="60"/>
+                        <TextField fx:id="resultTextField"
+                                   promptText="IV + Key combined preview"
+                                   styleClass="form-field" HBox.hgrow="ALWAYS"
+                                   editable="false"
+                                   style="-fx-font-size:11px; -fx-text-fill:#5a6480;"/>
+                        <Button text="Save to File" onAction="#saveToFile"
+                                prefWidth="110" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- QUICK ACTIONS CARD -->
+                <VBox styleClass="card" spacing="12">
+                    <Label text="QUICK ACTIONS" styleClass="section-label"/>
+                    <Label text="Once your keys are ready, proceed to encrypt or decrypt medical files."
+                           style="-fx-text-fill:#3d4f65; -fx-font-size:12px;"/>
+                    <HBox spacing="12">
+                        <Button text="&#8593;  Go to Encrypt"
+                                onAction="#openEncryption"
+                                prefWidth="180" prefHeight="38"
+                                styleClass="btn-success"/>
+                        <Button text="&#8595;  Go to Decrypt"
+                                onAction="#openDecryption"
+                                prefWidth="180" prefHeight="38"
+                                styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
             </VBox>
-        </HBox>
-    </top>
+        </content>
+    </ScrollPane>
 
-    <!-- ── CENTER CONTENT ── -->
-    <center>
-        <VBox spacing="18" style="-fx-padding: 22 24;">
-
-            <!-- KEY GENERATION CARD -->
-            <VBox styleClass="card" spacing="14">
-                <Label text="CRYPTOGRAPHIC KEYS" styleClass="section-label"/>
-
-                <!-- IV row -->
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Button text="Generate IV" onAction="#IVGeneration"
-                            prefWidth="130" prefHeight="36" styleClass="btn-secondary">
-                        <tooltip><Tooltip text="Generate a random 8-byte Initialization Vector (IV) for AES-CBC"/></tooltip>
-                    </Button>
-                    <TextField fx:id="ivDisplayField"
-                               promptText="Initialization Vector (IV)"
-                               styleClass="form-field" HBox.hgrow="ALWAYS"/>
-                    <Button text="Copy" onAction="#copyIv" prefWidth="64" styleClass="btn-ghost">
-                        <tooltip><Tooltip text="Copy IV to clipboard"/></tooltip>
-                    </Button>
-                    <Button text="Save" onAction="#saveIv"  prefWidth="64" styleClass="btn-ghost">
-                        <tooltip><Tooltip text="Save IV to session memory for use on the Encryption screen"/></tooltip>
-                    </Button>
-                </HBox>
-
-                <!-- Key row -->
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Button text="Generate Key" onAction="#KeyGeneration"
-                            prefWidth="130" prefHeight="36" styleClass="btn-secondary">
-                        <tooltip><Tooltip text="Generate a random 256-bit AES encryption key"/></tooltip>
-                    </Button>
-                    <TextField fx:id="ikDisplayField"
-                               promptText="AES-256 Encryption Key"
-                               styleClass="form-field" HBox.hgrow="ALWAYS"/>
-                    <Button text="Copy" onAction="#copyKey" prefWidth="64" styleClass="btn-ghost">
-                        <tooltip><Tooltip text="Copy key to clipboard"/></tooltip>
-                    </Button>
-                    <Button text="Save" onAction="#saveKey"  prefWidth="64" styleClass="btn-ghost">
-                        <tooltip><Tooltip text="Save key to session memory for use on the Encryption screen"/></tooltip>
-                    </Button>
-                </HBox>
-
-                <Separator/>
-
-                <!-- Combined / export row -->
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Preview" styleClass="field-label" prefWidth="60"/>
-                    <TextField fx:id="resultTextField"
-                               promptText="IV + Key combined preview"
-                               styleClass="form-field" HBox.hgrow="ALWAYS"
-                               editable="false"
-                               style="-fx-font-size:11px; -fx-text-fill:#8892aa;"/>
-                    <Button text="Save to File" onAction="#saveToFile"
-                            prefWidth="110" styleClass="btn-primary"/>
-                </HBox>
-            </VBox>
-
-            <!-- NAVIGATION SECTION LABEL -->
-            <Label text="ACTIONS" styleClass="section-label">
-                <VBox.margin><Insets top="4"/></VBox.margin>
-            </Label>
-
-            <!-- Two nav tiles -->
-            <HBox spacing="14">
-
-                <!-- Encrypt tile -->
-                <Button styleClass="nav-card" onAction="#openEncryption"
-                        maxWidth="Infinity" prefHeight="120" HBox.hgrow="ALWAYS">
-                    <graphic>
-                        <VBox alignment="CENTER" spacing="8" style="-fx-padding:0;">
-                            <Label text="&#128272;" style="-fx-font-size:30px;"/>
-                            <Label text="Encrypt Files"
-                                   style="-fx-text-fill:#e8eaf0; -fx-font-size:15px; -fx-font-weight:bold;"/>
-                            <Label text="Secure PDF documents with AES-256"
-                                   style="-fx-text-fill:#5a6480; -fx-font-size:11px;"/>
-                        </VBox>
-                    </graphic>
-                </Button>
-
-                <!-- Decrypt tile -->
-                <Button styleClass="nav-card" onAction="#openDecryption"
-                        maxWidth="Infinity" prefHeight="120" HBox.hgrow="ALWAYS">
-                    <graphic>
-                        <VBox alignment="CENTER" spacing="8" style="-fx-padding:0;">
-                            <Label text="&#128275;" style="-fx-font-size:30px;"/>
-                            <Label text="Decrypt Files"
-                                   style="-fx-text-fill:#e8eaf0; -fx-font-size:15px; -fx-font-weight:bold;"/>
-                            <Label text="Restore encrypted patient records"
-                                   style="-fx-text-fill:#5a6480; -fx-font-size:11px;"/>
-                        </VBox>
-                    </graphic>
-                </Button>
-
-            </HBox>
-
-            <!-- Footer -->
-            <Region VBox.vgrow="ALWAYS"/>
-            <Label text="Secure Laboratory Data System  ·  AES-256 CBC  ·  PostgreSQL"
-                   style="-fx-text-fill:#252d3d; -fx-font-size:11px;"
-                   maxWidth="Infinity" alignment="CENTER"/>
-
-        </VBox>
-    </center>
-
-</BorderPane>
+</VBox>
