@@ -15,31 +15,76 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Primary service for the file lifecycle.
+ * Primary service for the encrypted file lifecycle.
  *
  * Upload flow  (uploadAndEncrypt):
  *   read plaintext → generate DEK+IV → encrypt → DB transaction
  *   [upsert patient → insert medical_files → insert file_keys] → commit
- *   → secure-delete original only after successful commit
+ *   → secure-delete original ONLY after confirmed commit
  *
- * Export flow  (exportDecrypted):
+ * Export/View flow  (exportDecrypted):
  *   load ciphertext from medical_files → load wrapped DEK+IV from file_keys
  *   → unwrap DEK → decrypt → write to output path → mark VIEWED
  *
- * Controllers call only these two entry points plus the list methods.
- * All cryptographic details stay inside this class and CryptoService.
+ * Controllers call only the public API; no SQL or crypto logic belongs there.
+ *
+ * Bug fixes applied (Command 2):
+ *   - loadRecordWithData: replaced fragile String.replace() with a dedicated
+ *     SQL constant (BASE_SELECT_WITH_BLOB).
+ *   - queryList: replaced parse-by-exception integer detection with explicit
+ *     typed overloads (queryAll, queryByString, queryById).
  */
 public final class FileService {
+
+    // ── SQL constants ─────────────────────────────────────────────────────────
+
+    /**
+     * Base SELECT that loads all metadata columns but NOT the encrypted blob.
+     * Used for list views where loading large BLOBs is wasteful.
+     */
+    private static final String BASE_SELECT =
+        "SELECT mf.file_id, mf.patient_number, " +
+        "       p.first_name || ' ' || p.last_name AS patient_name, " +
+        "       mf.original_name, " +
+        "       t.test_name, d.doctor_name, tech.technician_name, " +
+        "       mf.test_date, mf.test_status, mf.status, " +
+        "       mf.uploaded_by, u.full_name AS uploader_name, mf.uploaded_at " +
+        "FROM medical_files mf " +
+        "JOIN patients p        ON p.patient_number   = mf.patient_number " +
+        "LEFT JOIN tests        t    ON t.test_id          = mf.test_id " +
+        "LEFT JOIN doctors      d    ON d.doctor_id        = mf.doctor_id " +
+        "LEFT JOIN technicians  tech ON tech.technician_id = mf.technician_id " +
+        "LEFT JOIN users        u    ON u.user_id          = mf.uploaded_by ";
+
+    /**
+     * Variant that also fetches encrypted_data for export/view operations.
+     * Kept as a separate constant — no fragile string manipulation.
+     */
+    private static final String BASE_SELECT_WITH_BLOB =
+        "SELECT mf.file_id, mf.patient_number, " +
+        "       p.first_name || ' ' || p.last_name AS patient_name, " +
+        "       mf.encrypted_data, mf.original_name, " +
+        "       t.test_name, d.doctor_name, tech.technician_name, " +
+        "       mf.test_date, mf.test_status, mf.status, " +
+        "       mf.uploaded_by, u.full_name AS uploader_name, mf.uploaded_at " +
+        "FROM medical_files mf " +
+        "JOIN patients p        ON p.patient_number   = mf.patient_number " +
+        "LEFT JOIN tests        t    ON t.test_id          = mf.test_id " +
+        "LEFT JOIN doctors      d    ON d.doctor_id        = mf.doctor_id " +
+        "LEFT JOIN technicians  tech ON tech.technician_id = mf.technician_id " +
+        "LEFT JOIN users        u    ON u.user_id          = mf.uploaded_by ";
 
     // ── Upload ────────────────────────────────────────────────────────────────
 
     /**
      * Full atomic upload:
-     * encrypts the file, saves patient + file + key to DB in one transaction,
-     * then securely deletes the original only after the transaction commits.
+     *   encrypts the file → saves patient + medical_files + file_keys in one
+     *   transaction → securely deletes the original ONLY after commit succeeds.
+     *
+     * If anything fails before commit the original file is untouched.
      *
      * @return the newly created file_id
-     * @throws Exception if anything fails; original file is NOT deleted on failure
+     * @throws Exception on any failure; original file is NOT deleted on failure
      */
     public static int uploadAndEncrypt(RecordDraft draft) throws Exception {
         if (!draft.hasFile()) throw new IllegalArgumentException("No file in draft.");
@@ -47,7 +92,7 @@ public final class FileService {
         File   original = draft.getOriginalFile();
         byte[] raw      = Files.readAllBytes(original.toPath());
 
-        // Generate per-file DEK and IV — these never appear outside this method
+        // Per-file DEK and IV — generated fresh, never reused, never exposed
         SecretKey dek        = CryptoService.generateDEK();
         byte[]    iv         = CryptoService.generateIV();
         byte[]    ciphertext = CryptoService.encrypt(raw, dek, iv);
@@ -61,9 +106,9 @@ public final class FileService {
             try {
                 PatientService.upsert(conn, draft.getPatient());
 
-                int testId  = LookupService.getOrCreateTest(conn, draft.getTestType());
-                int docId   = LookupService.getOrCreateDoctor(conn, draft.getDoctorName());
-                int techId  = LookupService.getOrCreateTechnician(conn, draft.getTechnicianName());
+                int testId = LookupService.getOrCreateTest(conn, draft.getTestType());
+                int docId  = LookupService.getOrCreateDoctor(conn, draft.getDoctorName());
+                int techId = LookupService.getOrCreateTechnician(conn, draft.getTechnicianName());
 
                 fileId = insertFile(conn, draft, ciphertext, testId, docId, techId, uploadedBy);
                 KeyService.save(conn, fileId, wrappedDEK, iv);
@@ -75,23 +120,24 @@ public final class FileService {
             }
         }
 
-        // Only delete the plaintext file after a confirmed successful commit
+        // Original file is deleted ONLY after the transaction has committed
         secureDelete(original);
         return fileId;
     }
 
-    // ── Export ────────────────────────────────────────────────────────────────
+    // ── Export / View ─────────────────────────────────────────────────────────
 
     /**
      * Decrypts the stored file and writes it to outputDir.
-     * The decrypted copy is the caller's responsibility; it is not auto-deleted.
-     * The record's status is updated to VIEWED.
+     * The record's status is updated to VIEWED after a successful export.
+     * The decrypted copy is the caller's responsibility (temp dir + deleteOnExit
+     * for view-only usage; permanent path for admin export).
      *
      * @return the written File so the caller can open or display it
      */
     public static File exportDecrypted(int fileId, File outputDir) throws Exception {
-        FileRecord  record    = loadRecordWithData(fileId);
-        KeyRecord   keyRecord = KeyService.load(fileId);
+        FileRecord record    = loadRecordWithData(fileId);
+        KeyRecord  keyRecord = KeyService.load(fileId);
 
         SecretKey dek       = CryptoService.unwrapDEK(keyRecord.getEncryptedKey());
         byte[]    plaintext = CryptoService.decrypt(record.getEncryptedData(), dek, keyRecord.getIv());
@@ -108,53 +154,43 @@ public final class FileService {
         return out;
     }
 
-    // ── Queries ───────────────────────────────────────────────────────────────
+    // ── Public Query API ──────────────────────────────────────────────────────
 
-    /** All records (no blob loaded), newest first. */
+    /** All records (no blob), newest first. */
     public static List<FileRecord> listAll() throws Exception {
-        return queryList(BASE_SELECT + " ORDER BY mf.uploaded_at DESC", null);
+        return queryAll(BASE_SELECT + "ORDER BY mf.uploaded_at DESC");
     }
 
-    /** All records for one patient (no blob), newest first. */
+    /** All records for one patient (no blob), newest first by test date. */
     public static List<FileRecord> listForPatient(String patientNumber) throws Exception {
-        return queryList(BASE_SELECT + " WHERE mf.patient_number = ? ORDER BY mf.test_date DESC",
-                         patientNumber);
+        return queryByString(
+            BASE_SELECT + "WHERE mf.patient_number = ? ORDER BY mf.test_date DESC",
+            patientNumber);
     }
 
     /** Records uploaded by a specific user (no blob), newest first. */
     public static List<FileRecord> listByUploader(int userId) throws Exception {
-        return queryList(BASE_SELECT + " WHERE mf.uploaded_by = ? ORDER BY mf.uploaded_at DESC",
-                         String.valueOf(userId));
+        return queryById(
+            BASE_SELECT + "WHERE mf.uploaded_by = ? ORDER BY mf.uploaded_at DESC",
+            userId);
     }
 
-    /** Single record metadata (no blob). */
+    /** Single record metadata (no blob). Throws if not found. */
     public static FileRecord loadRecord(int fileId) throws Exception {
-        List<FileRecord> list = queryList(BASE_SELECT + " WHERE mf.file_id = ?",
-                                          String.valueOf(fileId));
+        List<FileRecord> list = queryById(
+            BASE_SELECT + "WHERE mf.file_id = ?", fileId);
         if (list.isEmpty()) throw new Exception("Record not found: file_id=" + fileId);
         return list.get(0);
     }
 
-    /** Total number of records across all patients. */
+    /** Total record count across all patients. */
     public static int countAll() {
-        try (Connection conn = DatabaseConnection.connect();
-             PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM medical_files")) {
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt(1);
-        } catch (Exception ignored) {}
-        return 0;
+        return countWhere("1=1");
     }
 
     /** Count records matching a specific status (READY, VIEWED, ARCHIVED). */
     public static int countByStatus(String status) {
-        try (Connection conn = DatabaseConnection.connect();
-             PreparedStatement ps = conn.prepareStatement(
-                 "SELECT COUNT(*) FROM medical_files WHERE status = ?")) {
-            ps.setString(1, status);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt(1);
-        } catch (Exception ignored) {}
-        return 0;
+        return countWhere("status = '" + status.replace("'", "") + "'");
     }
 
     /** Count records uploaded by a specific user. */
@@ -164,12 +200,11 @@ public final class FileService {
                  "SELECT COUNT(*) FROM medical_files WHERE uploaded_by = ?")) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt(1);
-        } catch (Exception ignored) {}
-        return 0;
+            return rs.next() ? rs.getInt(1) : 0;
+        } catch (Exception ignored) { return 0; }
     }
 
-    /** Update the status of a record (READY → VIEWED → ARCHIVED). */
+    /** Updates the status of a record (READY → VIEWED → ARCHIVED). */
     public static void updateStatus(int fileId, String status) {
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement ps = conn.prepareStatement(
@@ -182,56 +217,70 @@ public final class FileService {
         }
     }
 
-    // ── Private helpers ───────────────────────────────────────────────────────
+    // ── Private Query Helpers ─────────────────────────────────────────────────
 
-    private static final String BASE_SELECT =
-        "SELECT mf.file_id, mf.patient_number, " +
-        "       p.first_name || ' ' || p.last_name AS patient_name, " +
-        "       mf.original_name, " +
-        "       t.test_name, d.doctor_name, tech.technician_name, " +
-        "       mf.test_date, mf.test_status, mf.status, " +
-        "       mf.uploaded_by, u.full_name AS uploader_name, mf.uploaded_at " +
-        "FROM medical_files mf " +
-        "JOIN patients p ON p.patient_number = mf.patient_number " +
-        "LEFT JOIN tests        t    ON t.test_id          = mf.test_id " +
-        "LEFT JOIN doctors      d    ON d.doctor_id        = mf.doctor_id " +
-        "LEFT JOIN technicians  tech ON tech.technician_id = mf.technician_id " +
-        "LEFT JOIN users        u    ON u.user_id          = mf.uploaded_by ";
+    /** Run a no-parameter SELECT and return the mapped list. */
+    private static List<FileRecord> queryAll(String sql) throws Exception {
+        List<FileRecord> out = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) out.add(mapRow(rs, false));
+        }
+        return out;
+    }
 
-    private static List<FileRecord> queryList(String sql, String param) throws Exception {
+    /** Run a VARCHAR-parameter SELECT (e.g. patient_number). */
+    private static List<FileRecord> queryByString(String sql, String param) throws Exception {
         List<FileRecord> out = new ArrayList<>();
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            if (param != null) {
-                // Detect integer vs string parameter
-                try { ps.setInt(1, Integer.parseInt(param)); }
-                catch (NumberFormatException e) { ps.setString(1, param); }
-            }
+            ps.setString(1, param);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) out.add(mapRow(rs, false));
         }
         return out;
     }
 
-    /** Loads encrypted blob for decryption — only called internally. */
-    private static FileRecord loadRecordWithData(int fileId) throws Exception {
-        String sql = BASE_SELECT.replace(
-            "mf.original_name,",
-            "mf.encrypted_data, mf.original_name,")
-            + " WHERE mf.file_id = ?";
+    /** Run an INTEGER-parameter SELECT (e.g. file_id, uploaded_by). */
+    private static List<FileRecord> queryById(String sql, int id) throws Exception {
+        List<FileRecord> out = new ArrayList<>();
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) out.add(mapRow(rs, false));
+        }
+        return out;
+    }
+
+    /** Loads encrypted blob — only called internally by exportDecrypted(). */
+    private static FileRecord loadRecordWithData(int fileId) throws Exception {
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(
+                 BASE_SELECT_WITH_BLOB + "WHERE mf.file_id = ?")) {
             ps.setInt(1, fileId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) return mapRow(rs, true);
         }
-        throw new Exception("File record not found: " + fileId);
+        throw new Exception("File record not found: file_id=" + fileId);
     }
+
+    private static int countWhere(String whereClause) {
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(
+                 "SELECT COUNT(*) FROM medical_files WHERE " + whereClause);
+             ResultSet rs = ps.executeQuery()) {
+            return rs.next() ? rs.getInt(1) : 0;
+        } catch (Exception ignored) { return 0; }
+    }
+
+    // ── Private Write Helpers ─────────────────────────────────────────────────
 
     private static int insertFile(Connection conn, RecordDraft draft,
                                   byte[] ciphertext, int testId, int docId,
                                   int techId, int uploadedBy) throws Exception {
-        String sql =
+        final String sql =
             "INSERT INTO medical_files " +
             "(patient_number, encrypted_data, original_name, " +
             " test_id, doctor_id, technician_id, " +
@@ -245,11 +294,14 @@ public final class FileService {
             ps.setInt   (4, testId);
             ps.setInt   (5, docId);
             ps.setInt   (6, techId);
+
             if (draft.getTestDate() != null)
                 ps.setDate(7, Date.valueOf(draft.getTestDate()));
             else
                 ps.setNull(7, Types.DATE);
+
             ps.setString(8, draft.getTestStatus());
+
             if (uploadedBy > 0) ps.setInt(9, uploadedBy);
             else                ps.setNull(9, Types.INTEGER);
 
@@ -260,26 +312,24 @@ public final class FileService {
     }
 
     private static void markViewed(int fileId) {
-        try (Connection conn = DatabaseConnection.connect();
-             PreparedStatement ps = conn.prepareStatement(
-                 "UPDATE medical_files SET status = 'VIEWED' WHERE file_id = ?")) {
-            ps.setInt(1, fileId);
-            ps.executeUpdate();
-        } catch (Exception ignored) {}
+        updateStatus(fileId, "VIEWED");
     }
 
     /**
-     * Overwrites the file content with zeros then deletes it.
-     * If the OS refuses deletion (locked file, read-only), the zeroed file
-     * is moved to the JVM temp directory and scheduled for deletion on JVM exit.
-     * Called only after a confirmed successful DB commit.
+     * Overwrites the file with zeros then deletes it.
+     * Called ONLY after a confirmed successful DB commit.
+     *
+     * If the OS refuses deletion (e.g. the file is locked), the zeroed
+     * file is moved to the JVM temp directory and scheduled for deletion
+     * on JVM exit. This prevents any readable plaintext from remaining at
+     * the original path.
      */
     private static void secureDelete(File file) {
         try {
             long size = file.length();
             try (FileOutputStream fos = new FileOutputStream(file)) {
                 byte[] zeros = new byte[(int) Math.min(size, 65_536)];
-                long   done  = 0;
+                long done = 0;
                 while (done < size) {
                     int chunk = (int) Math.min(zeros.length, size - done);
                     fos.write(zeros, 0, chunk);
@@ -298,6 +348,8 @@ public final class FileService {
             System.err.println("[FileService] secureDelete failed for " + file + ": " + e.getMessage());
         }
     }
+
+    // ── Row mapper ────────────────────────────────────────────────────────────
 
     private static FileRecord mapRow(ResultSet rs, boolean includeBlob) throws Exception {
         FileRecord r = new FileRecord();

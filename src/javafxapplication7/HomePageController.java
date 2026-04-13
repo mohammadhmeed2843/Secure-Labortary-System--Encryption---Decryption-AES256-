@@ -1,5 +1,7 @@
 package javafxapplication7;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -28,56 +30,72 @@ public class HomePageController {
         if (lblWelcome != null) lblWelcome.setText("Welcome, " + name);
         if (lblRole    != null) lblRole.setText(role + " — " + greeting());
 
-        buildStatCards();
         buildQuickActions();
+        loadStatCardsAsync();   // async: never blocks the FX thread
     }
 
-    // ── Stat cards ────────────────────────────────────────────────────────────
+    // ── Stat cards (loaded on a background thread) ────────────────────────────
 
-    private void buildStatCards() {
+    private void loadStatCardsAsync() {
         if (statCardsRow == null) return;
+        Role role = Session.getUser().getRole();
+
+        Task<int[]> task = new Task<>() {
+            @Override
+            protected int[] call() {
+                return switch (role) {
+                    case ADMIN -> new int[]{
+                        FileService.countAll(),
+                        FileService.countByStatus("READY"),
+                        FileService.countByStatus("VIEWED"),
+                        FileService.countByStatus("ARCHIVED")
+                    };
+                    case RECEPTIONIST -> new int[]{
+                        FileService.countAll(),
+                        FileService.countByUploader(Session.getUser().getUserId()),
+                        FileService.countByStatus("READY")
+                    };
+                    case DOCTOR -> new int[]{
+                        FileService.countAll(),
+                        FileService.countByStatus("READY"),
+                        FileService.countByStatus("VIEWED")
+                    };
+                };
+            }
+        };
+
+        task.setOnSucceeded(e -> Platform.runLater(() -> buildStatCards(role, task.getValue())));
+        task.setOnFailed   (e -> { /* counts stay blank on DB error — acceptable */ });
+
+        Thread t = new Thread(task, "smls-dashboard-stats");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void buildStatCards(Role role, int[] counts) {
         statCardsRow.getChildren().clear();
 
-        Role r = Session.getUser().getRole();
-
-        if (r == Role.ADMIN) {
-            int total    = FileService.countAll();
-            int ready    = FileService.countByStatus("READY");
-            int viewed   = FileService.countByStatus("VIEWED");
-            int archived = FileService.countByStatus("ARCHIVED");
-
-            statCardsRow.getChildren().addAll(
-                statCard("Total Records",   String.valueOf(total),    "stat-value-blue"),
-                statCard("Ready",           String.valueOf(ready),    "stat-value-green"),
-                statCard("Viewed",          String.valueOf(viewed),   "stat-value-purple"),
-                statCard("Archived",        String.valueOf(archived), "stat-value-amber")
+        switch (role) {
+            case ADMIN -> statCardsRow.getChildren().addAll(
+                statCard("Total Records",   counts[0], "stat-value-blue"),
+                statCard("Ready",           counts[1], "stat-value-green"),
+                statCard("Viewed",          counts[2], "stat-value-purple"),
+                statCard("Archived",        counts[3], "stat-value-amber")
             );
-
-        } else if (r == Role.TECHNICIAN) {
-            int total    = FileService.countAll();
-            int mine     = FileService.countByUploader(Session.getUser().getUserId());
-            int ready    = FileService.countByStatus("READY");
-
-            statCardsRow.getChildren().addAll(
-                statCard("Total Records", String.valueOf(total), "stat-value-blue"),
-                statCard("My Uploads",   String.valueOf(mine),  "stat-value-green"),
-                statCard("Ready",        String.valueOf(ready), "stat-value-amber")
+            case RECEPTIONIST -> statCardsRow.getChildren().addAll(
+                statCard("Total Records", counts[0], "stat-value-blue"),
+                statCard("My Uploads",   counts[1], "stat-value-green"),
+                statCard("Ready",        counts[2], "stat-value-amber")
             );
-
-        } else if (r == Role.DOCTOR) {
-            int total  = FileService.countAll();
-            int ready  = FileService.countByStatus("READY");
-            int viewed = FileService.countByStatus("VIEWED");
-
-            statCardsRow.getChildren().addAll(
-                statCard("Total Records", String.valueOf(total),  "stat-value-blue"),
-                statCard("Awaiting Review", String.valueOf(ready), "stat-value-green"),
-                statCard("Reviewed",      String.valueOf(viewed), "stat-value-purple")
+            case DOCTOR -> statCardsRow.getChildren().addAll(
+                statCard("Total Records",    counts[0], "stat-value-blue"),
+                statCard("Awaiting Review",  counts[1], "stat-value-green"),
+                statCard("Reviewed",         counts[2], "stat-value-purple")
             );
         }
     }
 
-    private static VBox statCard(String labelText, String value, String valueStyle) {
+    private static VBox statCard(String labelText, int value, String valueStyle) {
         VBox card = new VBox(4);
         card.getStyleClass().add("stat-card");
         card.setAlignment(Pos.TOP_LEFT);
@@ -86,7 +104,7 @@ public class HomePageController {
         Label lbl = new Label(labelText);
         lbl.getStyleClass().add("stat-label");
 
-        Label val = new Label(value);
+        Label val = new Label(String.valueOf(value));
         val.getStyleClass().add(valueStyle);
 
         card.getChildren().addAll(lbl, val);
@@ -99,21 +117,22 @@ public class HomePageController {
         if (quickActionsBox == null) return;
         quickActionsBox.getChildren().clear();
 
-        Role r = Session.getUser().getRole();
-
-        if (r == Role.ADMIN) {
-            quickActionsBox.getChildren().addAll(
-                actionBtn("&#8679;  New Record",     "btn-success", e -> MainLayoutController.navigateToUpload()),
-                actionBtn("&#9776;  All Records",    "btn-primary", e -> MainLayoutController.navigateToRecords())
+        switch (Session.getUser().getRole()) {
+            case ADMIN -> quickActionsBox.getChildren().addAll(
+                actionBtn("&#8679;  New Record",  "btn-success",
+                          e -> MainLayoutController.navigateToUpload()),
+                actionBtn("&#9776;  All Records", "btn-primary",
+                          e -> MainLayoutController.navigateToRecords())
             );
-        } else if (r == Role.TECHNICIAN) {
-            quickActionsBox.getChildren().addAll(
-                actionBtn("&#8679;  New Record",     "btn-success", e -> MainLayoutController.navigateToUpload()),
-                actionBtn("&#9776;  View My Uploads","btn-primary", e -> MainLayoutController.navigateToRecords())
+            case RECEPTIONIST -> quickActionsBox.getChildren().addAll(
+                actionBtn("&#8679;  New Record",      "btn-success",
+                          e -> MainLayoutController.navigateToUpload()),
+                actionBtn("&#9776;  My Uploads",      "btn-primary",
+                          e -> MainLayoutController.navigateToRecords())
             );
-        } else if (r == Role.DOCTOR) {
-            quickActionsBox.getChildren().add(
-                actionBtn("&#128196;  Patient Files","btn-primary", e -> MainLayoutController.navigateToPatientFiles())
+            case DOCTOR -> quickActionsBox.getChildren().add(
+                actionBtn("&#128196;  Patient Files", "btn-primary",
+                          e -> MainLayoutController.navigateToPatientFiles())
             );
         }
     }
