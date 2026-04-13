@@ -85,6 +85,18 @@
                     </GridPane>
                 </VBox>
 
+                <!-- EXISTING RECORDS (version update) — hidden until patient found -->
+                <VBox fx:id="existingRecordsSection" styleClass="card" spacing="10" visible="false" managed="false">
+                    <Label text="UPDATE EXISTING RECORD" styleClass="section-label"/>
+                    <Label text="A patient record already exists. Select one below to create a new version (the selected record will be archived), or leave blank to add a new independent record."
+                           style="-fx-text-fill:#9ca3af; -fx-font-size:11px;" wrapText="true"/>
+                    <VBox spacing="4">
+                        <Label text="Record to Supersede" styleClass="field-label"/>
+                        <ComboBox fx:id="supersededRecordBox" maxWidth="Infinity"
+                                  promptText="— New record (no supersede) —"/>
+                    </VBox>
+                </VBox>
+
                 <!-- PDF FILE -->
                 <VBox styleClass="card" spacing="10">
                     <Label text="PDF REPORT FILE" styleClass="section-label"/>

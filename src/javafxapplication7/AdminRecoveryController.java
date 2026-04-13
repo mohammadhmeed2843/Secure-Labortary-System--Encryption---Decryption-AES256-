@@ -1,0 +1,172 @@
+package javafxapplication7;
+
+import javafx.concurrent.Task;
+import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafxapplication7.model.FileRecord;
+import javafxapplication7.service.AuditService;
+import javafxapplication7.service.FileService;
+import javafxapplication7.service.HistoryService;
+import javafxapplication7.service.PermissionService;
+import javafxapplication7.session.Session;
+
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+/**
+ * Admin-only screen: shows archived files and allows restore.
+ *
+ * Restore logic: when the admin restores an archived version, the system must
+ * know which file_id is currently active for that patient+record family so it
+ * can archive it before restoring the old one.  The approach here is:
+ *   1. Load the version chain for the selected archived file.
+ *   2. The newest non-archived file in the chain becomes currentFileId.
+ *   3. Call HistoryService.restoreVersion(oldFileId, currentFileId).
+ */
+public class AdminRecoveryController {
+
+    @FXML private VBox recoveryListBox;
+
+    private static final DateTimeFormatter FMT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    @FXML
+    public void initialize() {
+        if (!Session.isLoggedIn() ||
+                !PermissionService.canArchive(Session.getUser().getRole())) {
+            recoveryListBox.getChildren().add(new Label("Access denied."));
+            return;
+        }
+        loadArchivedFiles();
+    }
+
+    @FXML
+    private void handleRefresh() { loadArchivedFiles(); }
+
+    private void loadArchivedFiles() {
+        recoveryListBox.getChildren().setAll(new Label("Loading archived files…"));
+        Task<List<FileRecord>> task = new Task<>() {
+            @Override protected List<FileRecord> call() throws Exception {
+                return HistoryService.listArchivedFiles();
+            }
+        };
+        task.setOnSucceeded(e -> javafx.application.Platform.runLater(() ->
+            buildList(task.getValue())));
+        task.setOnFailed(e -> javafx.application.Platform.runLater(() ->
+            recoveryListBox.getChildren().setAll(
+                new Label("Failed: " + task.getException().getMessage()))));
+
+        Thread t = new Thread(task, "smls-recovery-load");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void buildList(List<FileRecord> records) {
+        recoveryListBox.getChildren().clear();
+        if (records.isEmpty()) {
+            recoveryListBox.getChildren().add(
+                new Label("No archived records found."));
+            return;
+        }
+
+        for (FileRecord r : records) {
+            VBox card = new VBox(6);
+            card.setStyle("-fx-padding:12 16 12 16; -fx-background-color:#151b27; " +
+                          "-fx-background-radius:8;");
+
+            HBox top = new HBox(12);
+            top.setAlignment(Pos.CENTER_LEFT);
+
+            Label patientName = new Label(r.getPatientName() != null
+                    ? r.getPatientName() : r.getPatientNumber());
+            patientName.setStyle("-fx-text-fill:#e8eaf0; -fx-font-size:13px; -fx-font-weight:bold;");
+
+            Label testLabel = new Label(r.getTestType() != null ? r.getTestType() : "Unknown test");
+            testLabel.setStyle("-fx-text-fill:#3b82f6; -fx-font-size:11px; " +
+                               "-fx-background-color:#0d1b2e; -fx-padding:2 8 2 8; -fx-background-radius:10;");
+
+            Label versionLabel = new Label("v" + r.getFileVersion());
+            versionLabel.setStyle("-fx-text-fill:#f59e0b; -fx-font-size:11px; " +
+                                  "-fx-background-color:#2d1b00; -fx-padding:2 8 2 8; -fx-background-radius:10;");
+
+            Label dateLabel = new Label(r.getTestDate() != null
+                    ? r.getTestDate().format(FMT) : "—");
+            dateLabel.setStyle("-fx-text-fill:#4b5563; -fx-font-size:11px;");
+            HBox.setHgrow(dateLabel, Priority.ALWAYS);
+
+            Button restoreBtn = new Button("Restore");
+            restoreBtn.setStyle("-fx-background-color:#14532d; -fx-text-fill:white; " +
+                                "-fx-font-size:12px; -fx-padding:5 14;");
+            restoreBtn.setOnAction(e -> handleRestore(r, restoreBtn));
+
+            top.getChildren().addAll(patientName, testLabel, versionLabel, dateLabel, restoreBtn);
+
+            Label meta = new Label(
+                "File #" + r.getFileId() + "  ·  " +
+                (r.getDoctorName() != null ? r.getDoctorName() : "—") + "  ·  " +
+                (r.getOriginalName() != null ? r.getOriginalName() : "—") +
+                (r.getPreviousVersionId() != null
+                    ? "  ·  supersedes #" + r.getPreviousVersionId() : ""));
+            meta.setStyle("-fx-text-fill:#4b5563; -fx-font-size:11px;");
+
+            card.getChildren().addAll(top, meta);
+            recoveryListBox.getChildren().add(card);
+        }
+    }
+
+    private void handleRestore(FileRecord archived, Button btn) {
+        btn.setDisable(true);
+        btn.setText("Restoring…");
+
+        Task<Void> task = new Task<>() {
+            @Override protected Void call() throws Exception {
+                // Find a currently active file for this patient to archive in exchange.
+                // Walk all records for this patient and take the newest non-archived one.
+                List<FileRecord> allForPatient =
+                        FileService.listForPatient(archived.getPatientNumber());
+                int currentFileId = -1;
+                for (FileRecord r : allForPatient) {
+                    if (!"ARCHIVED".equals(r.getStatus()) &&
+                        r.getFileId() != archived.getFileId()) {
+                        // Pick the most recent active record (list is already sorted newest-first)
+                        currentFileId = r.getFileId();
+                        break;
+                    }
+                }
+                if (currentFileId < 0) {
+                    // No active version — just mark the archived one as READY
+                    javafxapplication7.service.FileService.updateStatus(archived.getFileId(), "READY");
+                } else {
+                    HistoryService.restoreVersion(archived.getFileId(), currentFileId);
+                }
+                AuditService.logCurrent(AuditService.RESTORE_FILE, "file",
+                        String.valueOf(archived.getFileId()),
+                        "restored from archived; previous active=" + currentFileId);
+                return null;
+            }
+        };
+        task.setOnSucceeded(e -> javafx.application.Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setHeaderText(null);
+            a.setContentText("File #" + archived.getFileId() + " restored successfully.");
+            a.showAndWait();
+            loadArchivedFiles();
+        }));
+        task.setOnFailed(e -> javafx.application.Platform.runLater(() -> {
+            btn.setDisable(false);
+            btn.setText("Restore");
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setHeaderText("Restore failed");
+            a.setContentText(task.getException().getMessage());
+            a.showAndWait();
+        }));
+
+        Thread t = new Thread(task, "smls-restore");
+        t.setDaemon(true);
+        t.start();
+    }
+}

@@ -24,6 +24,8 @@ public class FileRecord {
     private int           uploadedBy;
     private String        uploaderName;
     private LocalDateTime uploadedAt;
+    private int           fileVersion       = 1;
+    private Integer       previousVersionId;     // null for original files
 
     public FileRecord() {}
 
@@ -55,6 +57,10 @@ public class FileRecord {
     public void          setUploaderName(String v) { this.uploaderName = v; }
     public LocalDateTime getUploadedAt()     { return uploadedAt;     }
     public void          setUploadedAt(LocalDateTime v) { this.uploadedAt = v; }
+    public int           getFileVersion()            { return fileVersion;          }
+    public void          setFileVersion(int v)       { this.fileVersion = v;        }
+    public Integer       getPreviousVersionId()      { return previousVersionId;    }
+    public void          setPreviousVersionId(Integer v) { this.previousVersionId = v; }
 
     /** Human-readable summary for display in combo-boxes and lists. */
     public String toDisplayString() {

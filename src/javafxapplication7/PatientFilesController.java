@@ -9,6 +9,8 @@ import javafxapplication7.model.FileRecord;
 import javafxapplication7.model.Patient;
 import javafxapplication7.service.FileService;
 import javafxapplication7.service.PatientService;
+import javafxapplication7.service.PermissionService;
+import javafxapplication7.session.Session;
 
 import java.io.File;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +40,11 @@ public class PatientFilesController {
 
     @FXML
     public void initialize() {
+        if (!Session.isLoggedIn() ||
+                !PermissionService.canViewPatientFiles(Session.getUser().getRole())) {
+            if (filesHeaderLabel != null) filesHeaderLabel.setText("Access denied.");
+            return;
+        }
         searchPatientField.textProperty().addListener((obs, o, n) -> filterPatients(n));
         loadPatients();
     }

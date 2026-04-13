@@ -34,26 +34,53 @@
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
 
-            <!-- New Record — ADMIN + TECHNICIAN only -->
+            <!-- New Record — RECEPTIONIST + ADMIN only -->
             <Button fx:id="navUpload"
                     text="  &#8679;   New Record"
                     onAction="#showUpload"
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
 
-            <!-- All Records — ADMIN + TECHNICIAN only -->
+            <!-- All Records — RECEPTIONIST + ADMIN only -->
             <Button fx:id="navRecords"
                     text="  &#9776;   All Records"
                     onAction="#showRecords"
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
 
-            <!-- Patient Files — DOCTOR only -->
+            <!-- Patient Files — DOCTOR + ADMIN only -->
             <Button fx:id="navPatientFiles"
                     text="  &#128196;   Patient Files"
                     onAction="#showPatientFiles"
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
+
+            <Label fx:id="navAdminSection" text="ADMINISTRATION"
+                   styleClass="nav-section-label" managed="false" visible="false"/>
+
+            <!-- Users — ADMIN only -->
+            <Button fx:id="navAdminUsers"
+                    text="  &#128100;   Users"
+                    onAction="#showAdminUsers"
+                    styleClass="nav-item"
+                    maxWidth="Infinity"
+                    managed="false" visible="false"/>
+
+            <!-- Audit Log — ADMIN only -->
+            <Button fx:id="navAdminAudit"
+                    text="  &#128203;   Audit Log"
+                    onAction="#showAdminAudit"
+                    styleClass="nav-item"
+                    maxWidth="Infinity"
+                    managed="false" visible="false"/>
+
+            <!-- File Recovery — ADMIN only -->
+            <Button fx:id="navAdminRecovery"
+                    text="  &#128260;   File Recovery"
+                    onAction="#showAdminRecovery"
+                    styleClass="nav-item"
+                    maxWidth="Infinity"
+                    managed="false" visible="false"/>
 
             <Region VBox.vgrow="ALWAYS"/>
 

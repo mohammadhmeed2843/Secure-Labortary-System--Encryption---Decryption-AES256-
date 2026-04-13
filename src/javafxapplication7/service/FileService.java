@@ -48,7 +48,8 @@ public final class FileService {
         "       mf.original_name, " +
         "       t.test_name, d.doctor_name, tech.technician_name, " +
         "       mf.test_date, mf.test_status, mf.status, " +
-        "       mf.uploaded_by, u.full_name AS uploader_name, mf.uploaded_at " +
+        "       mf.uploaded_by, u.full_name AS uploader_name, mf.uploaded_at, " +
+        "       mf.file_version, mf.previous_version_id " +
         "FROM medical_files mf " +
         "JOIN patients p        ON p.patient_number   = mf.patient_number " +
         "LEFT JOIN tests        t    ON t.test_id          = mf.test_id " +
@@ -66,7 +67,8 @@ public final class FileService {
         "       mf.encrypted_data, mf.original_name, " +
         "       t.test_name, d.doctor_name, tech.technician_name, " +
         "       mf.test_date, mf.test_status, mf.status, " +
-        "       mf.uploaded_by, u.full_name AS uploader_name, mf.uploaded_at " +
+        "       mf.uploaded_by, u.full_name AS uploader_name, mf.uploaded_at, " +
+        "       mf.file_version, mf.previous_version_id " +
         "FROM medical_files mf " +
         "JOIN patients p        ON p.patient_number   = mf.patient_number " +
         "LEFT JOIN tests        t    ON t.test_id          = mf.test_id " +
@@ -122,6 +124,69 @@ public final class FileService {
 
         // Original file is deleted ONLY after the transaction has committed
         secureDelete(original);
+        AuditService.logCurrent(AuditService.UPLOAD, "file",
+                String.valueOf(fileId), draft.getOriginalFile().getName());
+        return fileId;
+    }
+
+    /**
+     * Uploads a new version of an existing record.
+     * The previous active file is archived and linked via previous_version_id.
+     *
+     * @param draft          new record content (same patient is assumed)
+     * @param previousFileId file_id of the version being superseded
+     * @return the newly created file_id
+     */
+    public static int uploadNewVersion(RecordDraft draft, int previousFileId) throws Exception {
+        if (!draft.hasFile()) throw new IllegalArgumentException("No file in draft.");
+
+        // Determine next version number
+        FileRecord prev = loadRecord(previousFileId);
+        int nextVersion = prev.getFileVersion() + 1;
+
+        File   original = draft.getOriginalFile();
+        byte[] raw      = Files.readAllBytes(original.toPath());
+
+        SecretKey dek        = CryptoService.generateDEK();
+        byte[]    iv         = CryptoService.generateIV();
+        byte[]    ciphertext = CryptoService.encrypt(raw, dek, iv);
+        byte[]    wrappedDEK = CryptoService.wrapDEK(dek);
+
+        int uploadedBy = Session.isLoggedIn() ? Session.getUser().getUserId() : 0;
+
+        int fileId;
+        try (Connection conn = DatabaseConnection.connect()) {
+            conn.setAutoCommit(false);
+            try {
+                PatientService.upsert(conn, draft.getPatient());
+
+                int testId = LookupService.getOrCreateTest(conn, draft.getTestType());
+                int docId  = LookupService.getOrCreateDoctor(conn, draft.getDoctorName());
+                int techId = LookupService.getOrCreateTechnician(conn, draft.getTechnicianName());
+
+                // Archive the previous version
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "UPDATE medical_files SET status = 'ARCHIVED' WHERE file_id = ?")) {
+                    ps.setInt(1, previousFileId);
+                    ps.executeUpdate();
+                }
+
+                fileId = insertFileVersioned(conn, draft, ciphertext,
+                        testId, docId, techId, uploadedBy,
+                        nextVersion, previousFileId);
+                KeyService.save(conn, fileId, wrappedDEK, iv);
+
+                conn.commit();
+            } catch (Exception e) {
+                conn.rollback();
+                throw e;
+            }
+        }
+
+        secureDelete(original);
+        AuditService.logCurrent(AuditService.UPDATE_FILE, "file",
+                String.valueOf(fileId),
+                "v" + nextVersion + " supersedes file_id=" + previousFileId);
         return fileId;
     }
 
@@ -151,6 +216,8 @@ public final class FileService {
         Files.write(out.toPath(), plaintext);
 
         markViewed(fileId);
+        AuditService.logCurrent(AuditService.EXPORT, "file",
+                String.valueOf(fileId), fileName);
         return out;
     }
 
@@ -311,6 +378,46 @@ public final class FileService {
         throw new Exception("INSERT into medical_files returned no file_id.");
     }
 
+    /** Insert a new version with explicit version number and link to previous. */
+    private static int insertFileVersioned(Connection conn, RecordDraft draft,
+                                           byte[] ciphertext, int testId, int docId,
+                                           int techId, int uploadedBy,
+                                           int fileVersion, int previousFileId) throws Exception {
+        final String sql =
+            "INSERT INTO medical_files " +
+            "(patient_number, encrypted_data, original_name, " +
+            " test_id, doctor_id, technician_id, " +
+            " test_date, test_status, uploaded_by, " +
+            " file_version, previous_version_id) " +
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?) RETURNING file_id";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, draft.getPatient().getPatientNumber());
+            ps.setBytes (2, ciphertext);
+            ps.setString(3, draft.getOriginalFile().getName());
+            ps.setInt   (4, testId);
+            ps.setInt   (5, docId);
+            ps.setInt   (6, techId);
+
+            if (draft.getTestDate() != null)
+                ps.setDate(7, Date.valueOf(draft.getTestDate()));
+            else
+                ps.setNull(7, Types.DATE);
+
+            ps.setString(8, draft.getTestStatus());
+
+            if (uploadedBy > 0) ps.setInt(9, uploadedBy);
+            else                ps.setNull(9, Types.INTEGER);
+
+            ps.setInt(10, fileVersion);
+            ps.setInt(11, previousFileId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        }
+        throw new Exception("INSERT (versioned) into medical_files returned no file_id.");
+    }
+
     private static void markViewed(int fileId) {
         updateStatus(fileId, "VIEWED");
     }
@@ -369,6 +476,9 @@ public final class FileService {
         r.setUploaderName(rs.getString("uploader_name"));
         Timestamp ts = rs.getTimestamp("uploaded_at");
         if (ts != null) r.setUploadedAt(ts.toLocalDateTime());
+        r.setFileVersion(rs.getInt("file_version"));
+        int prevId = rs.getInt("previous_version_id");
+        if (!rs.wasNull()) r.setPreviousVersionId(prevId);
         return r;
     }
 

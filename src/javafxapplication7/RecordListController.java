@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafxapplication7.model.FileRecord;
 import javafxapplication7.model.Role;
 import javafxapplication7.service.FileService;
+import javafxapplication7.service.PermissionService;
 import javafxapplication7.session.Session;
 
 import java.io.File;
@@ -34,6 +35,12 @@ public class RecordListController {
 
     @FXML
     public void initialize() {
+        if (!Session.isLoggedIn() ||
+                !PermissionService.canViewAllRecords(Session.getUser().getRole())) {
+            showError("Access denied: insufficient permissions.");
+            return;
+        }
+
         statusFilter.getItems().addAll("All", "READY", "VIEWED", "ARCHIVED");
         statusFilter.setValue("All");
         statusFilter.setOnAction(e -> applyFilter());

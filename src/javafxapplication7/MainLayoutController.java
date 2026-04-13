@@ -12,12 +12,20 @@ import javafxapplication7.session.Session;
 public class MainLayoutController {
 
     @FXML private StackPane contentArea;
-    @FXML private Button    navDashboard;
-    @FXML private Button    navUpload;        // ADMIN + TECHNICIAN: "New Record"
-    @FXML private Button    navRecords;       // ADMIN + TECHNICIAN: "All Records"
-    @FXML private Button    navPatientFiles;  // DOCTOR: "Patient Files"
-    @FXML private Label     lblUserName;
-    @FXML private Label     lblUserRole;
+
+    // ── Sidebar nav buttons ───────────────────────────────────────────────────
+    @FXML private Button navDashboard;
+    @FXML private Button navUpload;          // RECEPTIONIST + ADMIN
+    @FXML private Button navRecords;         // RECEPTIONIST + ADMIN
+    @FXML private Button navPatientFiles;    // DOCTOR + ADMIN
+    @FXML private Label  navAdminSection;    // ADMIN only (section header)
+    @FXML private Button navAdminUsers;      // ADMIN only
+    @FXML private Button navAdminAudit;      // ADMIN only
+    @FXML private Button navAdminRecovery;   // ADMIN only
+
+    // ── Footer labels ─────────────────────────────────────────────────────────
+    @FXML private Label lblUserName;
+    @FXML private Label lblUserRole;
 
     private static MainLayoutController instance;
     private Button activeNav;
@@ -30,15 +38,23 @@ public class MainLayoutController {
             if (lblUserName != null) lblUserName.setText(Session.getUser().getFullName());
             if (lblUserRole != null) lblUserRole.setText(Session.getUser().getRole().getDisplayName());
 
-            boolean canUpload = Session.canUpload();   // ADMIN + TECHNICIAN
-            boolean isDoctor  = Session.hasRole(Role.DOCTOR);
+            Role role = Session.getUser().getRole();
+            boolean isAdmin        = role == Role.ADMIN;
+            boolean isReceptionist = role == Role.RECEPTIONIST;
+            boolean isDoctor       = role == Role.DOCTOR;
 
-            // New Record — hidden for DOCTOR
-            setVisible(navUpload, canUpload);
-            // All Records — hidden for DOCTOR
-            setVisible(navRecords, canUpload);
-            // Patient Files — only for DOCTOR
-            setVisible(navPatientFiles, isDoctor);
+            // New Record + All Records: RECEPTIONIST and ADMIN
+            setVisible(navUpload,       isReceptionist || isAdmin);
+            setVisible(navRecords,      isReceptionist || isAdmin);
+
+            // Patient Files: DOCTOR and ADMIN
+            setVisible(navPatientFiles, isDoctor || isAdmin);
+
+            // Admin section: ADMIN only
+            setVisible(navAdminSection, isAdmin);
+            setVisible(navAdminUsers,   isAdmin);
+            setVisible(navAdminAudit,   isAdmin);
+            setVisible(navAdminRecovery,isAdmin);
         }
 
         loadContent("HomePage.fxml");
@@ -48,20 +64,52 @@ public class MainLayoutController {
     // ── Static navigation API ─────────────────────────────────────────────────
 
     public static void navigateToDashboard() {
-        if (instance != null) { instance.loadContent("HomePage.fxml"); instance.activate(instance.navDashboard); }
+        if (instance != null) {
+            instance.loadContent("HomePage.fxml");
+            instance.activate(instance.navDashboard);
+        }
     }
 
-    /** Navigate to the unified upload screen (UploadTest.fxml). */
     public static void navigateToUpload() {
-        if (instance != null) { instance.loadContent("UploadTest.fxml"); instance.activate(instance.navUpload); }
+        if (instance != null) {
+            instance.loadContent("UploadTest.fxml");
+            instance.activate(instance.navUpload);
+        }
     }
 
     public static void navigateToRecords() {
-        if (instance != null) { instance.loadContent("RecordList.fxml"); instance.activate(instance.navRecords); }
+        if (instance != null) {
+            instance.loadContent("RecordList.fxml");
+            instance.activate(instance.navRecords);
+        }
     }
 
     public static void navigateToPatientFiles() {
-        if (instance != null) { instance.loadContent("PatientFiles.fxml"); instance.activate(instance.navPatientFiles); }
+        if (instance != null) {
+            instance.loadContent("PatientFiles.fxml");
+            instance.activate(instance.navPatientFiles);
+        }
+    }
+
+    public static void navigateToAdminUsers() {
+        if (instance != null) {
+            instance.loadContent("AdminUsersPanel.fxml");
+            instance.activate(instance.navAdminUsers);
+        }
+    }
+
+    public static void navigateToAdminAudit() {
+        if (instance != null) {
+            instance.loadContent("AdminAuditPanel.fxml");
+            instance.activate(instance.navAdminAudit);
+        }
+    }
+
+    public static void navigateToAdminRecovery() {
+        if (instance != null) {
+            instance.loadContent("AdminRecoveryPanel.fxml");
+            instance.activate(instance.navAdminRecovery);
+        }
     }
 
     /** Navigate to any FXML panel without changing active sidebar state. */
@@ -76,12 +124,15 @@ public class MainLayoutController {
 
     // ── Sidebar button handlers ───────────────────────────────────────────────
 
-    @FXML private void showDashboard()    { navigateToDashboard();    }
-    @FXML private void showUpload()       { navigateToUpload();       }
-    @FXML private void showRecords()      { navigateToRecords();      }
-    @FXML private void showPatientFiles() { navigateToPatientFiles(); }
+    @FXML private void showDashboard()     { navigateToDashboard();     }
+    @FXML private void showUpload()        { navigateToUpload();        }
+    @FXML private void showRecords()       { navigateToRecords();       }
+    @FXML private void showPatientFiles()  { navigateToPatientFiles();  }
+    @FXML private void showAdminUsers()    { navigateToAdminUsers();    }
+    @FXML private void showAdminAudit()    { navigateToAdminAudit();    }
+    @FXML private void showAdminRecovery() { navigateToAdminRecovery(); }
 
-    // ── Internal helpers ─────────────────────────────────────────────────────
+    // ── Internal helpers ──────────────────────────────────────────────────────
 
     private void loadContent(String fxmlFileName) {
         try {
@@ -103,10 +154,10 @@ public class MainLayoutController {
         activeNav = nav;
     }
 
-    private static void setVisible(Button btn, boolean visible) {
-        if (btn != null) {
-            btn.setVisible(visible);
-            btn.setManaged(visible);
+    private static void setVisible(javafx.scene.Node node, boolean visible) {
+        if (node != null) {
+            node.setVisible(visible);
+            node.setManaged(visible);
         }
     }
 }
