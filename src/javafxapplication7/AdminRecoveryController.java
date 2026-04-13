@@ -75,43 +75,49 @@ public class AdminRecoveryController {
 
         for (FileRecord r : records) {
             VBox card = new VBox(6);
-            card.setStyle("-fx-padding:12 16 12 16; -fx-background-color:#151b27; " +
-                          "-fx-background-radius:8;");
+            card.setStyle("-fx-padding:14 18 14 18; -fx-background-color:#FFFFFF; " +
+                          "-fx-background-radius:10; -fx-border-color:#E5E7EB; " +
+                          "-fx-border-radius:10; -fx-border-width:1; " +
+                          "-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.05),6,0,0,2);");
 
             HBox top = new HBox(12);
             top.setAlignment(Pos.CENTER_LEFT);
 
             Label patientName = new Label(r.getPatientName() != null
                     ? r.getPatientName() : r.getPatientNumber());
-            patientName.setStyle("-fx-text-fill:#e8eaf0; -fx-font-size:13px; -fx-font-weight:bold;");
+            patientName.setStyle("-fx-text-fill:#111827; -fx-font-size:13px; -fx-font-weight:bold;");
 
             Label testLabel = new Label(r.getTestType() != null ? r.getTestType() : "Unknown test");
-            testLabel.setStyle("-fx-text-fill:#3b82f6; -fx-font-size:11px; " +
-                               "-fx-background-color:#0d1b2e; -fx-padding:2 8 2 8; -fx-background-radius:10;");
+            testLabel.setStyle("-fx-text-fill:#2563EB; -fx-font-size:11px; " +
+                               "-fx-background-color:#DBEAFE; -fx-padding:2 8 2 8; -fx-background-radius:10;");
 
             Label versionLabel = new Label("v" + r.getFileVersion());
-            versionLabel.setStyle("-fx-text-fill:#f59e0b; -fx-font-size:11px; " +
-                                  "-fx-background-color:#2d1b00; -fx-padding:2 8 2 8; -fx-background-radius:10;");
+            versionLabel.setStyle("-fx-text-fill:#D97706; -fx-font-size:11px; " +
+                                  "-fx-background-color:#FEF3C7; -fx-padding:2 8 2 8; -fx-background-radius:10;");
+
+            Label archivedBadge = new Label("ARCHIVED");
+            archivedBadge.setStyle("-fx-text-fill:#6B7280; -fx-font-size:10px; " +
+                                   "-fx-background-color:#F3F4F6; -fx-padding:2 8 2 8; -fx-background-radius:10; -fx-font-weight:bold;");
 
             Label dateLabel = new Label(r.getTestDate() != null
                     ? r.getTestDate().format(FMT) : "—");
-            dateLabel.setStyle("-fx-text-fill:#4b5563; -fx-font-size:11px;");
+            dateLabel.setStyle("-fx-text-fill:#9CA3AF; -fx-font-size:11px;");
             HBox.setHgrow(dateLabel, Priority.ALWAYS);
 
-            Button restoreBtn = new Button("Restore");
-            restoreBtn.setStyle("-fx-background-color:#14532d; -fx-text-fill:white; " +
-                                "-fx-font-size:12px; -fx-padding:5 14;");
+            Button restoreBtn = new Button("&#8635; Restore");
+            restoreBtn.setStyle("-fx-background-color:#C41230; -fx-text-fill:white; " +
+                                "-fx-background-radius:7; -fx-font-size:12px; -fx-padding:6 16; -fx-cursor:hand;");
             restoreBtn.setOnAction(e -> handleRestore(r, restoreBtn));
 
-            top.getChildren().addAll(patientName, testLabel, versionLabel, dateLabel, restoreBtn);
+            top.getChildren().addAll(patientName, testLabel, versionLabel, archivedBadge, dateLabel, restoreBtn);
 
             Label meta = new Label(
-                "File #" + r.getFileId() + "  ·  " +
+                "Record #" + r.getFileId() + "  ·  " +
                 (r.getDoctorName() != null ? r.getDoctorName() : "—") + "  ·  " +
                 (r.getOriginalName() != null ? r.getOriginalName() : "—") +
                 (r.getPreviousVersionId() != null
-                    ? "  ·  supersedes #" + r.getPreviousVersionId() : ""));
-            meta.setStyle("-fx-text-fill:#4b5563; -fx-font-size:11px;");
+                    ? "  ·  previous version: #" + r.getPreviousVersionId() : ""));
+            meta.setStyle("-fx-text-fill:#9CA3AF; -fx-font-size:11px;");
 
             card.getChildren().addAll(top, meta);
             recoveryListBox.getChildren().add(card);

@@ -11,13 +11,12 @@ public class JavaFXApplication7 extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Seed the three default users on first launch if the table is empty
         AuthService.seedDefaultUsersIfEmpty();
 
-        Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
-        primaryStage.setTitle("Secure Medical File System");
-        primaryStage.setMinWidth(480);
-        primaryStage.setMinHeight(400);
+        Parent root = FXMLLoader.load(getClass().getResource("RoleSelect.fxml"));
+        primaryStage.setTitle("Secure Medical Lab System");
+        primaryStage.setMinWidth(680);
+        primaryStage.setMinHeight(500);
         primaryStage.setScene(new Scene(root));
         primaryStage.centerOnScreen();
         primaryStage.show();

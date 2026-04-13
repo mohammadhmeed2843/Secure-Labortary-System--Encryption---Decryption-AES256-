@@ -117,35 +117,34 @@ public class AdminUsersController {
         for (User u : users) {
             HBox row = new HBox(10);
             row.setAlignment(Pos.CENTER_LEFT);
-            row.setStyle("-fx-padding:10 14 10 14; -fx-background-radius:6;" +
+            row.setStyle("-fx-padding:12 16 12 16; -fx-background-radius:8;" +
                          (u.isActive()
-                            ? "-fx-background-color:#151b27;"
-                            : "-fx-background-color:#1a1a1a; -fx-opacity:0.7;"));
+                            ? "-fx-background-color:#FFFFFF; -fx-border-color:#E5E7EB; -fx-border-radius:8; -fx-border-width:1;"
+                            : "-fx-background-color:#F3F4F6; -fx-border-color:#E5E7EB; -fx-border-radius:8; -fx-border-width:1; -fx-opacity:0.7;"));
 
             Label nameLabel = new Label(u.getFullName());
-            nameLabel.setStyle("-fx-text-fill:#e8eaf0; -fx-font-size:13px; -fx-font-weight:bold;");
+            nameLabel.setStyle("-fx-text-fill:#111827; -fx-font-size:13px; -fx-font-weight:bold;");
 
             Label roleLabel = new Label(u.getRole().getDisplayName());
-            roleLabel.setStyle("-fx-text-fill:#3b82f6; -fx-font-size:11px; " +
-                               "-fx-background-color:#0d1b2e; -fx-padding:2 8 2 8; -fx-background-radius:10;");
+            roleLabel.setStyle("-fx-text-fill:#C41230; -fx-font-size:11px; " +
+                               "-fx-background-color:#FEF2F2; -fx-padding:2 8 2 8; -fx-background-radius:10;");
 
             Label usernameLabel = new Label("@" + u.getUsername());
-            usernameLabel.setStyle("-fx-text-fill:#4b5563; -fx-font-size:11px;");
+            usernameLabel.setStyle("-fx-text-fill:#9CA3AF; -fx-font-size:11px;");
             HBox.setHgrow(usernameLabel, Priority.ALWAYS);
 
             Button toggleBtn = new Button(u.isActive() ? "Deactivate" : "Activate");
             toggleBtn.setStyle(u.isActive()
-                ? "-fx-background-color:#7f1d1d; -fx-text-fill:white; -fx-font-size:11px; -fx-padding:4 10;"
-                : "-fx-background-color:#14532d; -fx-text-fill:white; -fx-font-size:11px; -fx-padding:4 10;");
+                ? "-fx-background-color:#FEF2F2; -fx-text-fill:#C41230; -fx-border-color:#FDE8EC; -fx-border-width:1; -fx-background-radius:6; -fx-font-size:11px; -fx-padding:4 12; -fx-cursor:hand;"
+                : "-fx-background-color:#F0FDF4; -fx-text-fill:#059669; -fx-border-color:#D1FAE5; -fx-border-width:1; -fx-background-radius:6; -fx-font-size:11px; -fx-padding:4 12; -fx-cursor:hand;");
             final int uid = u.getUserId();
             final boolean active = u.isActive();
             toggleBtn.setOnAction(e -> handleToggleActive(uid, active));
 
-            // Don't allow admin to deactivate themselves
             if (uid == Session.getUser().getUserId()) toggleBtn.setDisable(true);
 
-            Button resetBtn = new Button("Reset PW");
-            resetBtn.setStyle("-fx-background-color:#1e293b; -fx-text-fill:#94a3b8; -fx-font-size:11px; -fx-padding:4 10;");
+            Button resetBtn = new Button("Reset Password");
+            resetBtn.setStyle("-fx-background-color:#F9FAFB; -fx-text-fill:#6B7280; -fx-border-color:#E5E7EB; -fx-border-width:1; -fx-background-radius:6; -fx-font-size:11px; -fx-padding:4 12; -fx-cursor:hand;");
             resetBtn.setOnAction(e -> showResetSection(uid, u.getFullName()));
 
             row.getChildren().addAll(nameLabel, roleLabel, usernameLabel, toggleBtn, resetBtn);

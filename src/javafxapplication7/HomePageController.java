@@ -119,19 +119,21 @@ public class HomePageController {
 
         switch (Session.getUser().getRole()) {
             case ADMIN -> quickActionsBox.getChildren().addAll(
-                actionBtn("&#8679;  New Record",  "btn-success",
-                          e -> MainLayoutController.navigateToUpload()),
-                actionBtn("&#9776;  All Records", "btn-primary",
-                          e -> MainLayoutController.navigateToRecords())
+                actionBtn("&#128100;  User Accounts", "btn-primary",
+                          e -> MainLayoutController.navigateToAdminUsers()),
+                actionBtn("&#128203;  Activity Log",  "btn-secondary",
+                          e -> MainLayoutController.navigateToAdminAudit()),
+                actionBtn("&#128260;  File Recovery", "btn-secondary",
+                          e -> MainLayoutController.navigateToAdminRecovery())
             );
             case RECEPTIONIST -> quickActionsBox.getChildren().addAll(
-                actionBtn("&#8679;  New Record",      "btn-success",
+                actionBtn("&#8679;  New Test Record", "btn-success",
                           e -> MainLayoutController.navigateToUpload()),
-                actionBtn("&#9776;  My Uploads",      "btn-primary",
+                actionBtn("&#9776;  All Records",     "btn-primary",
                           e -> MainLayoutController.navigateToRecords())
             );
             case DOCTOR -> quickActionsBox.getChildren().add(
-                actionBtn("&#128196;  Patient Files", "btn-primary",
+                actionBtn("&#128196;  View Patient Files", "btn-primary",
                           e -> MainLayoutController.navigateToPatientFiles())
             );
         }

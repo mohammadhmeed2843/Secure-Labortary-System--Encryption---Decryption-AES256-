@@ -8,7 +8,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/21"
             fx:controller="javafxapplication7.MainLayoutController"
-            prefWidth="1060" prefHeight="680"
+            prefWidth="1080" prefHeight="700"
             styleClass="screen-root">
 
     <stylesheets><URL value="@styles.css"/></stylesheets>
@@ -17,38 +17,35 @@
         <VBox styleClass="sidebar">
 
             <!-- Brand -->
-            <VBox styleClass="sidebar-brand" spacing="4">
-                <Label text="&#127973;" style="-fx-font-size:24px;"/>
-                <Label text="Medical Lab"
-                       style="-fx-text-fill:#c8d0e0; -fx-font-size:15px; -fx-font-weight:bold;"/>
-                <Label text="Secure File System"
-                       style="-fx-text-fill:#1e2b3a; -fx-font-size:10px;"/>
+            <VBox styleClass="sidebar-brand" spacing="3">
+                <Label text="&#9764;"
+                       style="-fx-font-size:22px; -fx-text-fill:#C41230;"/>
+                <Label text="MedLab Secure"
+                       style="-fx-text-fill:#111827; -fx-font-size:15px; -fx-font-weight:bold;"/>
+                <Label text="Laboratory File System"
+                       style="-fx-text-fill:#9CA3AF; -fx-font-size:10px;"/>
             </VBox>
 
             <Label text="WORKSPACE" styleClass="nav-section-label"/>
 
-            <!-- Dashboard — always visible -->
             <Button fx:id="navDashboard"
                     text="  &#8801;   Dashboard"
                     onAction="#showDashboard"
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
 
-            <!-- New Record — RECEPTIONIST + ADMIN only -->
             <Button fx:id="navUpload"
-                    text="  &#8679;   New Record"
+                    text="  &#8679;   New Test Record"
                     onAction="#showUpload"
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
 
-            <!-- All Records — RECEPTIONIST + ADMIN only -->
             <Button fx:id="navRecords"
                     text="  &#9776;   All Records"
                     onAction="#showRecords"
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
 
-            <!-- Patient Files — DOCTOR + ADMIN only -->
             <Button fx:id="navPatientFiles"
                     text="  &#128196;   Patient Files"
                     onAction="#showPatientFiles"
@@ -58,23 +55,20 @@
             <Label fx:id="navAdminSection" text="ADMINISTRATION"
                    styleClass="nav-section-label" managed="false" visible="false"/>
 
-            <!-- Users — ADMIN only -->
             <Button fx:id="navAdminUsers"
-                    text="  &#128100;   Users"
+                    text="  &#128100;   User Accounts"
                     onAction="#showAdminUsers"
                     styleClass="nav-item"
                     maxWidth="Infinity"
                     managed="false" visible="false"/>
 
-            <!-- Audit Log — ADMIN only -->
             <Button fx:id="navAdminAudit"
-                    text="  &#128203;   Audit Log"
+                    text="  &#128203;   Activity Log"
                     onAction="#showAdminAudit"
                     styleClass="nav-item"
                     maxWidth="Infinity"
                     managed="false" visible="false"/>
 
-            <!-- File Recovery — ADMIN only -->
             <Button fx:id="navAdminRecovery"
                     text="  &#128260;   File Recovery"
                     onAction="#showAdminRecovery"
@@ -84,15 +78,18 @@
 
             <Region VBox.vgrow="ALWAYS"/>
 
-            <Label text="SIGNED IN AS" styleClass="nav-section-label"/>
-            <Label fx:id="lblUserName"
-                   text="—"
-                   style="-fx-text-fill:#5a6480; -fx-font-size:11px; -fx-padding: 2 18;"/>
-            <Label fx:id="lblUserRole"
-                   text="—"
-                   style="-fx-text-fill:#1e2b3a; -fx-font-size:10px; -fx-padding: 2 18;">
-                <VBox.margin><Insets bottom="16"/></VBox.margin>
-            </Label>
+            <!-- Signed-in user footer -->
+            <VBox style="-fx-padding:12 16 16 16;
+                         -fx-background-color:#FAFAFA;
+                         -fx-border-color:#E5E7EB transparent transparent transparent;
+                         -fx-border-width:1 0 0 0;">
+                <Label text="SIGNED IN AS" styleClass="nav-section-label"
+                       style="-fx-padding:0 0 4 0;"/>
+                <Label fx:id="lblUserName" text="—"
+                       style="-fx-text-fill:#374151; -fx-font-size:12px; -fx-font-weight:bold;"/>
+                <Label fx:id="lblUserRole" text="—"
+                       style="-fx-text-fill:#9CA3AF; -fx-font-size:10px;"/>
+            </VBox>
 
         </VBox>
     </left>

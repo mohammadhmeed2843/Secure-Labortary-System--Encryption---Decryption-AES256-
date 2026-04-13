@@ -81,7 +81,7 @@ public class PatientFilesController {
         patientListContainer.getChildren().clear();
         if (patients.isEmpty()) {
             Label lbl = new Label("No patients found.");
-            lbl.setStyle("-fx-text-fill:#3d4f65; -fx-font-size:12px; -fx-padding:16 16;");
+            lbl.setStyle("-fx-text-fill:#9CA3AF; -fx-font-size:12px; -fx-padding:16 16;");
             patientListContainer.getChildren().add(lbl);
             return;
         }
@@ -125,7 +125,7 @@ public class PatientFilesController {
             if (records.isEmpty()) {
                 filesHeaderLabel.setText("No files available");
                 Label lbl = new Label("No lab reports are available for this patient.");
-                lbl.setStyle("-fx-text-fill:#3d4f65; -fx-font-size:13px; -fx-padding:24 0;");
+                lbl.setStyle("-fx-text-fill:#9CA3AF; -fx-font-size:13px; -fx-padding:24 0;");
                 filesContainer.getChildren().add(lbl);
                 return;
             }
@@ -151,13 +151,13 @@ public class PatientFilesController {
         HBox.setHgrow(info, Priority.ALWAYS);
 
         Label testName = new Label(nullStr(r.getTestType(), "Lab Report"));
-        testName.setStyle("-fx-text-fill:#e8eaf0; -fx-font-size:14px; -fx-font-weight:bold;");
+        testName.setStyle("-fx-text-fill:#111827; -fx-font-size:14px; -fx-font-weight:bold;");
 
         Label date = new Label(r.getTestDate() != null ? r.getTestDate().format(DATE_FMT) : "Date unknown");
-        date.setStyle("-fx-text-fill:#5a6480; -fx-font-size:11px;");
+        date.setStyle("-fx-text-fill:#6B7280; -fx-font-size:11px;");
 
         Label doctor = new Label("Ordered by: " + nullStr(r.getDoctorName(), "—"));
-        doctor.setStyle("-fx-text-fill:#5a6480; -fx-font-size:11px;");
+        doctor.setStyle("-fx-text-fill:#6B7280; -fx-font-size:11px;");
 
         info.getChildren().addAll(testName, date, doctor);
 
@@ -174,7 +174,7 @@ public class PatientFilesController {
 
         if (r.getOriginalName() != null && !r.getOriginalName().isBlank()) {
             Label fname = new Label(r.getOriginalName());
-            fname.setStyle("-fx-text-fill:#3d4f65; -fx-font-size:11px;");
+            fname.setStyle("-fx-text-fill:#9CA3AF; -fx-font-size:11px;");
             card.getChildren().add(fname);
         }
 

@@ -93,7 +93,7 @@ public class RecordListController {
 
         if (records.isEmpty()) {
             Label empty = new Label("No records match your search.");
-            empty.setStyle("-fx-text-fill:#3d4f65; -fx-font-size:13px; -fx-padding:32 0;");
+            empty.setStyle("-fx-text-fill:#9CA3AF; -fx-font-size:13px; -fx-padding:32 0;");
             recordsContainer.getChildren().add(empty);
             return;
         }
@@ -122,19 +122,19 @@ public class RecordListController {
         pNum.getStyleClass().add("record-patient-num");
 
         Label sep1 = new Label("·");
-        sep1.setStyle("-fx-text-fill:#252d3d;");
+        sep1.setStyle("-fx-text-fill:#D1D5DB;");
 
         Label testType = new Label(nullStr(r.getTestType(), "—"));
         testType.getStyleClass().add("record-meta");
 
         Label sep2 = new Label("·");
-        sep2.setStyle("-fx-text-fill:#252d3d;");
+        sep2.setStyle("-fx-text-fill:#D1D5DB;");
 
         Label date = new Label(r.getTestDate() != null ? r.getTestDate().format(DATE_FMT) : "—");
         date.getStyleClass().add("record-meta");
 
         Label sep3 = new Label("·");
-        sep3.setStyle("-fx-text-fill:#252d3d;");
+        sep3.setStyle("-fx-text-fill:#D1D5DB;");
 
         Label doctor = new Label(nullStr(r.getDoctorName(), "—"));
         doctor.getStyleClass().add("record-meta");

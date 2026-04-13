@@ -12,36 +12,39 @@
 
     <stylesheets><URL value="@styles.css"/></stylesheets>
 
-    <!-- ── INNER HEADER ── -->
-    <VBox style="-fx-padding: 28 28 16 28; -fx-background-color: #0f1117;">
+    <!-- Page header -->
+    <VBox styleClass="page-header">
         <Label text="All Records"
-               style="-fx-text-fill:#e8eaf0; -fx-font-size:22px; -fx-font-weight:bold;"/>
-        <Label text="Search, filter, and export encrypted medical records"
-               style="-fx-text-fill:#3d4f65; -fx-font-size:12px; -fx-padding: 4 0 0 0;"/>
+               style="-fx-text-fill:#111827; -fx-font-size:22px; -fx-font-weight:bold;"/>
+        <Label text="Search and manage all protected test records"
+               style="-fx-text-fill:#6B7280; -fx-font-size:12px; -fx-padding:4 0 0 0;"/>
     </VBox>
 
-    <!-- ── TOOLBAR ── -->
+    <!-- Toolbar -->
     <HBox spacing="10" alignment="CENTER_LEFT"
-          style="-fx-padding: 0 28 16 28; -fx-background-color: #0f1117;">
+          style="-fx-padding:14 28 14 28; -fx-background-color:#FFFFFF;
+                 -fx-border-color:transparent transparent #E5E7EB transparent;
+                 -fx-border-width:0 0 1 0;">
         <TextField fx:id="searchField"
-                   promptText="Search by patient, test type, doctor…"
+                   promptText="Search by patient name, ID, test type, doctor…"
                    styleClass="search-field"
                    HBox.hgrow="ALWAYS"/>
-        <ComboBox fx:id="statusFilter" prefWidth="130"/>
+        <ComboBox fx:id="statusFilter" prefWidth="140"
+                  promptText="All statuses"/>
         <Button text="&#8635;  Refresh"
                 onAction="#handleRefresh"
                 prefHeight="36" styleClass="btn-secondary"/>
-        <Label fx:id="countLabel" text="0 records"
-               style="-fx-text-fill:#3d4f65; -fx-font-size:11px; -fx-padding: 0 0 0 6;"/>
+        <Label fx:id="countLabel" text=""
+               style="-fx-text-fill:#9CA3AF; -fx-font-size:11px;"/>
     </HBox>
 
-    <!-- ── SCROLLABLE RECORD LIST ── -->
+    <!-- Record list -->
     <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
                 hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
-                style="-fx-background-color:#0f1117; -fx-background:#0f1117; -fx-border-width:0;">
+                style="-fx-background-color:transparent; -fx-border-width:0;">
         <content>
             <VBox fx:id="recordsContainer" spacing="8"
-                  style="-fx-padding: 0 28 28 28;"/>
+                  style="-fx-padding:16 28 28 28; -fx-background-color:#F8F9FA;"/>
         </content>
     </ScrollPane>
 

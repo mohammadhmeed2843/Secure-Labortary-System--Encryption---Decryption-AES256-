@@ -77,26 +77,28 @@ public class AdminAuditController {
         for (AuditEntry e : entries) {
             HBox row = new HBox(14);
             row.setAlignment(Pos.CENTER_LEFT);
-            row.setStyle("-fx-padding:8 14 8 14; -fx-background-color:#151b27; -fx-background-radius:6;");
+            row.setStyle("-fx-padding:9 14 9 14; -fx-background-color:#FFFFFF; " +
+                         "-fx-background-radius:6; -fx-border-color:#E5E7EB; " +
+                         "-fx-border-radius:6; -fx-border-width:1;");
 
             Label time = new Label(e.getCreatedAt() != null
                     ? e.getCreatedAt().format(FMT) : "—");
-            time.setStyle("-fx-text-fill:#4b5563; -fx-font-size:11px; -fx-min-width:160;");
+            time.setStyle("-fx-text-fill:#9CA3AF; -fx-font-size:11px; -fx-min-width:160;");
 
             Label action = new Label(e.getAction());
             action.setStyle("-fx-text-fill:" + actionColor(e.getAction()) + "; " +
-                            "-fx-font-size:11px; -fx-font-weight:bold; -fx-min-width:120;");
+                            "-fx-font-size:11px; -fx-font-weight:bold; -fx-min-width:130;");
 
             Label user = new Label(e.getUsername() != null ? "@" + e.getUsername() : "—");
-            user.setStyle("-fx-text-fill:#94a3b8; -fx-font-size:11px; -fx-min-width:120;");
+            user.setStyle("-fx-text-fill:#6B7280; -fx-font-size:11px; -fx-min-width:120;");
 
             Label target = new Label(
                 (e.getTargetType() != null ? e.getTargetType() + " " : "") +
                 (e.getTargetId()   != null ? "#" + e.getTargetId() : ""));
-            target.setStyle("-fx-text-fill:#3b82f6; -fx-font-size:11px; -fx-min-width:100;");
+            target.setStyle("-fx-text-fill:#C41230; -fx-font-size:11px; -fx-min-width:100;");
 
             Label details = new Label(e.getDetails() != null ? e.getDetails() : "");
-            details.setStyle("-fx-text-fill:#6b7280; -fx-font-size:11px;");
+            details.setStyle("-fx-text-fill:#9CA3AF; -fx-font-size:11px;");
             HBox.setHgrow(details, Priority.ALWAYS);
             details.setWrapText(false);
 
@@ -106,20 +108,20 @@ public class AdminAuditController {
     }
 
     private static String actionColor(String action) {
-        if (action == null) return "#9ca3af";
+        if (action == null) return "#9CA3AF";
         return switch (action) {
-            case AuditService.LOGIN          -> "#10b981";
+            case AuditService.LOGIN          -> "#059669";
             case AuditService.UPLOAD,
-                 AuditService.UPDATE_FILE    -> "#3b82f6";
+                 AuditService.UPDATE_FILE    -> "#2563EB";
             case AuditService.EXPORT,
-                 AuditService.VIEW           -> "#a855f7";
+                 AuditService.VIEW           -> "#7C3AED";
             case AuditService.DEACTIVATE_USER,
-                 AuditService.ARCHIVE        -> "#ef4444";
+                 AuditService.ARCHIVE        -> "#C41230";
             case AuditService.RESTORE_FILE,
-                 AuditService.ACTIVATE_USER  -> "#f59e0b";
+                 AuditService.ACTIVATE_USER  -> "#D97706";
             case AuditService.RESET_PASSWORD,
-                 AuditService.CREATE_USER    -> "#06b6d4";
-            default                          -> "#9ca3af";
+                 AuditService.CREATE_USER    -> "#0284C7";
+            default                          -> "#9CA3AF";
         };
     }
 }
