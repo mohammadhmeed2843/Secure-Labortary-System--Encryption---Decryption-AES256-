@@ -121,12 +121,65 @@ public final class FileService {
                          patientNumber);
     }
 
+    /** Records uploaded by a specific user (no blob), newest first. */
+    public static List<FileRecord> listByUploader(int userId) throws Exception {
+        return queryList(BASE_SELECT + " WHERE mf.uploaded_by = ? ORDER BY mf.uploaded_at DESC",
+                         String.valueOf(userId));
+    }
+
     /** Single record metadata (no blob). */
     public static FileRecord loadRecord(int fileId) throws Exception {
         List<FileRecord> list = queryList(BASE_SELECT + " WHERE mf.file_id = ?",
                                           String.valueOf(fileId));
         if (list.isEmpty()) throw new Exception("Record not found: file_id=" + fileId);
         return list.get(0);
+    }
+
+    /** Total number of records across all patients. */
+    public static int countAll() {
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM medical_files")) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception ignored) {}
+        return 0;
+    }
+
+    /** Count records matching a specific status (READY, VIEWED, ARCHIVED). */
+    public static int countByStatus(String status) {
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(
+                 "SELECT COUNT(*) FROM medical_files WHERE status = ?")) {
+            ps.setString(1, status);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception ignored) {}
+        return 0;
+    }
+
+    /** Count records uploaded by a specific user. */
+    public static int countByUploader(int userId) {
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(
+                 "SELECT COUNT(*) FROM medical_files WHERE uploaded_by = ?")) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception ignored) {}
+        return 0;
+    }
+
+    /** Update the status of a record (READY → VIEWED → ARCHIVED). */
+    public static void updateStatus(int fileId, String status) {
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(
+                 "UPDATE medical_files SET status = ? WHERE file_id = ?")) {
+            ps.setString(1, status);
+            ps.setInt(2, fileId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.err.println("[FileService] updateStatus failed: " + e.getMessage());
+        }
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────

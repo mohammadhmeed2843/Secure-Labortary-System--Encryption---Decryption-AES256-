@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import java.net.URL?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="javafxapplication7.PatientFilesController"
+      spacing="0"
+      styleClass="content-area">
+
+    <stylesheets><URL value="@styles.css"/></stylesheets>
+
+    <!-- ── INNER HEADER ── -->
+    <VBox style="-fx-padding: 28 28 16 28; -fx-background-color: #0f1117;">
+        <Label text="Patient Files"
+               style="-fx-text-fill:#e8eaf0; -fx-font-size:22px; -fx-font-weight:bold;"/>
+        <Label text="Search for a patient on the left, then click View File to open the decrypted report"
+               style="-fx-text-fill:#3d4f65; -fx-font-size:12px; -fx-padding: 4 0 0 0;"/>
+    </VBox>
+
+    <!-- ── SPLIT LAYOUT: patient list left | file cards right ── -->
+    <HBox VBox.vgrow="ALWAYS" spacing="0">
+
+        <!-- LEFT: patient search + list -->
+        <VBox styleClass="patient-list-panel" spacing="0">
+
+            <!-- Search -->
+            <VBox style="-fx-padding: 12 12 8 12;" spacing="6">
+                <TextField fx:id="searchPatientField"
+                           promptText="Search patients…"
+                           styleClass="search-field"/>
+                <Button text="&#8635;  Refresh"
+                        onAction="#handleRefreshPatients"
+                        styleClass="btn-ghost"
+                        maxWidth="Infinity"/>
+            </VBox>
+
+            <Separator style="-fx-background-color:#1e2b3a;"/>
+
+            <!-- Patient list -->
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                        style="-fx-background-color:#0d1117; -fx-background:#0d1117; -fx-border-width:0;">
+                <content>
+                    <VBox fx:id="patientListContainer" spacing="0"/>
+                </content>
+            </ScrollPane>
+        </VBox>
+
+        <!-- RIGHT: file cards for selected patient -->
+        <VBox VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS" spacing="0"
+              style="-fx-background-color:#0f1117;">
+
+            <!-- File panel header -->
+            <HBox style="-fx-padding: 14 24; -fx-background-color:#0f1117;
+                         -fx-border-color:transparent transparent #1e2b3a transparent;
+                         -fx-border-width:0 0 1 0;"
+                  alignment="CENTER_LEFT" spacing="12">
+                <VBox HBox.hgrow="ALWAYS">
+                    <Label fx:id="selectedPatientLabel"
+                           text="Select a patient"
+                           style="-fx-text-fill:#e8eaf0; -fx-font-size:14px; -fx-font-weight:bold;"/>
+                    <Label fx:id="filesHeaderLabel"
+                           text="No patient selected"
+                           style="-fx-text-fill:#3d4f65; -fx-font-size:11px;"/>
+                </VBox>
+            </HBox>
+
+            <!-- File cards -->
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                        style="-fx-background-color:#0f1117; -fx-background:#0f1117; -fx-border-width:0;">
+                <content>
+                    <VBox fx:id="filesContainer" spacing="12"
+                          style="-fx-padding: 20 24;"/>
+                </content>
+            </ScrollPane>
+        </VBox>
+
+    </HBox>
+
+</VBox>

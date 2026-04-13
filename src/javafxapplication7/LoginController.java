@@ -6,7 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -18,6 +18,7 @@ public class LoginController {
 
     @FXML private TextField     usernameField;
     @FXML private PasswordField passwordField;
+    @FXML private Label         errorLabel;
 
     @FXML
     private void handleLogin(ActionEvent event) {
@@ -25,13 +26,13 @@ public class LoginController {
         String password = passwordField.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
-            showError("Username and password are required.");
+            showInlineError("Username and password are required.");
             return;
         }
 
         User user = AuthService.login(username, password);
         if (user == null) {
-            showError("Invalid username or password.");
+            showInlineError("Invalid username or password.");
             passwordField.clear();
             usernameField.requestFocus();
             return;
@@ -44,20 +45,18 @@ public class LoginController {
                     getClass().getResource("/javafxapplication7/MainLayout.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(shell));
-            stage.setMinWidth(880);
-            stage.setMinHeight(580);
+            stage.setMinWidth(920);
+            stage.setMinHeight(600);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Failed to load the application. Please restart.");
+            showInlineError("Failed to load application — please restart.");
         }
     }
 
-    private void showError(String message) {
-        Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Login Failed");
-        a.setHeaderText(null);
-        a.setContentText(message);
-        a.showAndWait();
+    private void showInlineError(String message) {
+        if (errorLabel != null) {
+            errorLabel.setText(message);
+        }
     }
 }

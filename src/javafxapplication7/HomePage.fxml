@@ -15,87 +15,38 @@
 
     <!-- ── INNER HEADER ── -->
     <VBox style="-fx-padding: 28 28 20 28; -fx-background-color: #0f1117;">
-        <Label text="Dashboard"
+        <Label fx:id="lblWelcome"
+               text="Dashboard"
                style="-fx-text-fill:#e8eaf0; -fx-font-size:22px; -fx-font-weight:bold;"/>
-        <Label text="Generate and manage your session encryption keys"
+        <Label fx:id="lblRole"
+               text="—"
                style="-fx-text-fill:#3d4f65; -fx-font-size:12px; -fx-padding: 4 0 0 0;"/>
     </VBox>
 
-    <!-- ── SCROLLABLE CONTENT ── -->
     <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
                 hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
-                style="-fx-background-color: #0f1117; -fx-background: #0f1117; -fx-border-width:0;">
+                style="-fx-background-color:#0f1117; -fx-background:#0f1117; -fx-border-width:0;">
         <content>
-            <VBox spacing="16" style="-fx-padding: 0 28 28 28;">
+            <VBox spacing="20" style="-fx-padding: 0 28 32 28;">
 
-                <!-- KEY GENERATION CARD -->
-                <VBox styleClass="card" spacing="14">
-                    <Label text="CRYPTOGRAPHIC KEYS" styleClass="section-label"/>
+                <!-- Stat cards row — populated programmatically by controller -->
+                <HBox fx:id="statCardsRow" spacing="12"/>
 
-                    <!-- IV row -->
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Button text="Generate IV" onAction="#IVGeneration"
-                                prefWidth="130" prefHeight="36" styleClass="btn-secondary">
-                            <tooltip><Tooltip text="Generate a random 8-byte Initialization Vector for AES-CBC"/></tooltip>
-                        </Button>
-                        <TextField fx:id="ivDisplayField"
-                                   promptText="Initialization Vector (IV)"
-                                   styleClass="form-field" HBox.hgrow="ALWAYS"/>
-                        <Button text="Copy" onAction="#copyIv" prefWidth="64" styleClass="btn-ghost">
-                            <tooltip><Tooltip text="Copy IV to clipboard"/></tooltip>
-                        </Button>
-                        <Button text="Save" onAction="#saveIv" prefWidth="64" styleClass="btn-ghost">
-                            <tooltip><Tooltip text="Save IV to session memory"/></tooltip>
-                        </Button>
-                    </HBox>
-
-                    <!-- Key row -->
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Button text="Generate Key" onAction="#KeyGeneration"
-                                prefWidth="130" prefHeight="36" styleClass="btn-secondary">
-                            <tooltip><Tooltip text="Generate a random 256-bit AES encryption key"/></tooltip>
-                        </Button>
-                        <TextField fx:id="ikDisplayField"
-                                   promptText="AES-256 Encryption Key"
-                                   styleClass="form-field" HBox.hgrow="ALWAYS"/>
-                        <Button text="Copy" onAction="#copyKey" prefWidth="64" styleClass="btn-ghost">
-                            <tooltip><Tooltip text="Copy key to clipboard"/></tooltip>
-                        </Button>
-                        <Button text="Save" onAction="#saveKey" prefWidth="64" styleClass="btn-ghost">
-                            <tooltip><Tooltip text="Save key to session memory"/></tooltip>
-                        </Button>
-                    </HBox>
-
-                    <Separator/>
-
-                    <!-- Combined preview row -->
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Label text="Preview" styleClass="field-label" prefWidth="60"/>
-                        <TextField fx:id="resultTextField"
-                                   promptText="IV + Key combined preview"
-                                   styleClass="form-field" HBox.hgrow="ALWAYS"
-                                   editable="false"
-                                   style="-fx-font-size:11px; -fx-text-fill:#5a6480;"/>
-                        <Button text="Save to File" onAction="#saveToFile"
-                                prefWidth="110" styleClass="btn-primary"/>
-                    </HBox>
-                </VBox>
-
-                <!-- QUICK ACTIONS CARD -->
+                <!-- Quick actions card -->
                 <VBox styleClass="card" spacing="12">
                     <Label text="QUICK ACTIONS" styleClass="section-label"/>
-                    <Label text="Once your keys are ready, proceed to encrypt or decrypt medical files."
+                    <Label text="Navigate using the sidebar or the shortcuts below."
                            style="-fx-text-fill:#3d4f65; -fx-font-size:12px;"/>
-                    <HBox spacing="12">
-                        <Button text="&#8593;  Go to Encrypt"
-                                onAction="#openEncryption"
-                                prefWidth="180" prefHeight="38"
-                                styleClass="btn-success"/>
-                        <Button text="&#8595;  Go to Decrypt"
-                                onAction="#openDecryption"
-                                prefWidth="180" prefHeight="38"
-                                styleClass="btn-primary"/>
-                    </HBox>
+                    <HBox fx:id="quickActionsBox" spacing="12"/>
+                </VBox>
+
+                <!-- System info card -->
+                <VBox styleClass="card" spacing="8">
+                    <Label text="SYSTEM" styleClass="section-label"/>
+                    <Label text="AES-256 per-file encryption  ·  PBKDF2-HMAC-SHA256 authentication  ·  Role-based access control"
+                           style="-fx-text-fill:#3d4f65; -fx-font-size:11px;" wrapText="true"/>
+                    <Label text="All file encryption and decryption is transparent — no manual key handling required."
+                           style="-fx-text-fill:#1e2b3a; -fx-font-size:11px;" wrapText="true"/>
                 </VBox>
 
             </VBox>

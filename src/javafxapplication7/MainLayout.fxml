@@ -8,7 +8,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/21"
             fx:controller="javafxapplication7.MainLayoutController"
-            prefWidth="1020" prefHeight="660"
+            prefWidth="1060" prefHeight="680"
             styleClass="screen-root">
 
     <stylesheets><URL value="@styles.css"/></stylesheets>
@@ -16,6 +16,7 @@
     <left>
         <VBox styleClass="sidebar">
 
+            <!-- Brand -->
             <VBox styleClass="sidebar-brand" spacing="4">
                 <Label text="&#127973;" style="-fx-font-size:24px;"/>
                 <Label text="Medical Lab"
@@ -26,21 +27,31 @@
 
             <Label text="WORKSPACE" styleClass="nav-section-label"/>
 
+            <!-- Dashboard — always visible -->
             <Button fx:id="navDashboard"
                     text="  &#8801;   Dashboard"
                     onAction="#showDashboard"
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
 
+            <!-- New Record — ADMIN + TECHNICIAN only -->
             <Button fx:id="navUpload"
                     text="  &#8679;   New Record"
                     onAction="#showUpload"
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
 
-            <Button fx:id="navExport"
-                    text="  &#8681;   Export File"
-                    onAction="#showExport"
+            <!-- All Records — ADMIN + TECHNICIAN only -->
+            <Button fx:id="navRecords"
+                    text="  &#9776;   All Records"
+                    onAction="#showRecords"
+                    styleClass="nav-item"
+                    maxWidth="Infinity"/>
+
+            <!-- Patient Files — DOCTOR only -->
+            <Button fx:id="navPatientFiles"
+                    text="  &#128196;   Patient Files"
+                    onAction="#showPatientFiles"
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
 

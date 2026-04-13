@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import java.net.URL?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="javafxapplication7.RecordListController"
+      spacing="0"
+      styleClass="content-area">
+
+    <stylesheets><URL value="@styles.css"/></stylesheets>
+
+    <!-- ── INNER HEADER ── -->
+    <VBox style="-fx-padding: 28 28 16 28; -fx-background-color: #0f1117;">
+        <Label text="All Records"
+               style="-fx-text-fill:#e8eaf0; -fx-font-size:22px; -fx-font-weight:bold;"/>
+        <Label text="Search, filter, and export encrypted medical records"
+               style="-fx-text-fill:#3d4f65; -fx-font-size:12px; -fx-padding: 4 0 0 0;"/>
+    </VBox>
+
+    <!-- ── TOOLBAR ── -->
+    <HBox spacing="10" alignment="CENTER_LEFT"
+          style="-fx-padding: 0 28 16 28; -fx-background-color: #0f1117;">
+        <TextField fx:id="searchField"
+                   promptText="Search by patient, test type, doctor…"
+                   styleClass="search-field"
+                   HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="statusFilter" prefWidth="130"/>
+        <Button text="&#8635;  Refresh"
+                onAction="#handleRefresh"
+                prefHeight="36" styleClass="btn-secondary"/>
+        <Label fx:id="countLabel" text="0 records"
+               style="-fx-text-fill:#3d4f65; -fx-font-size:11px; -fx-padding: 0 0 0 6;"/>
+    </HBox>
+
+    <!-- ── SCROLLABLE RECORD LIST ── -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                style="-fx-background-color:#0f1117; -fx-background:#0f1117; -fx-border-width:0;">
+        <content>
+            <VBox fx:id="recordsContainer" spacing="8"
+                  style="-fx-padding: 0 28 28 28;"/>
+        </content>
+    </ScrollPane>
+
+</VBox>

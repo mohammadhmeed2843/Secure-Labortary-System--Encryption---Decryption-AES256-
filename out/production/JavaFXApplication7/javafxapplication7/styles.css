@@ -398,3 +398,197 @@
     -fx-padding: 6 12;
 }
 .small-btn:hover { -fx-background-color: #252d3d; -fx-text-fill: #c5cad8; }
+
+/* ================================================================
+   STATUS BADGES
+   ================================================================ */
+.badge-ready {
+    -fx-background-color: #0d2e1e;
+    -fx-text-fill: #10b981;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-padding: 3 8;
+}
+.badge-viewed {
+    -fx-background-color: #0d1e35;
+    -fx-text-fill: #60a5fa;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-padding: 3 8;
+}
+.badge-archived {
+    -fx-background-color: #1e0d2e;
+    -fx-text-fill: #a78bfa;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-padding: 3 8;
+}
+.badge-pending {
+    -fx-background-color: #2e1e0d;
+    -fx-text-fill: #f59e0b;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-padding: 3 8;
+}
+
+/* ================================================================
+   STAT CARDS (Dashboard)
+   ================================================================ */
+.stat-card {
+    -fx-background-color: #161b27;
+    -fx-background-radius: 10;
+    -fx-border-color: #252d3d;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-padding: 20 24;
+    -fx-pref-width: 170;
+}
+.stat-card:hover {
+    -fx-border-color: #3b4a60;
+}
+.stat-value {
+    -fx-text-fill: #e8eaf0;
+    -fx-font-size: 34px;
+    -fx-font-weight: bold;
+}
+.stat-label {
+    -fx-text-fill: #5a6480;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+.stat-value-blue   { -fx-text-fill: #60a5fa; -fx-font-size: 34px; -fx-font-weight: bold; }
+.stat-value-green  { -fx-text-fill: #10b981; -fx-font-size: 34px; -fx-font-weight: bold; }
+.stat-value-purple { -fx-text-fill: #a78bfa; -fx-font-size: 34px; -fx-font-weight: bold; }
+.stat-value-amber  { -fx-text-fill: #f59e0b; -fx-font-size: 34px; -fx-font-weight: bold; }
+
+/* ================================================================
+   RECORD LIST ITEMS
+   ================================================================ */
+.record-row {
+    -fx-background-color: #161b27;
+    -fx-background-radius: 8;
+    -fx-border-color: #252d3d;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-padding: 14 16;
+    -fx-cursor: hand;
+}
+.record-row:hover {
+    -fx-border-color: #3b4a60;
+    -fx-background-color: #1a2030;
+}
+.record-patient-name {
+    -fx-text-fill: #e8eaf0;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+.record-meta {
+    -fx-text-fill: #5a6480;
+    -fx-font-size: 11px;
+}
+.record-patient-num {
+    -fx-text-fill: #3b82f6;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+/* ================================================================
+   SEARCH FIELD
+   ================================================================ */
+.search-field {
+    -fx-background-color: #161b27;
+    -fx-text-fill: #e8eaf0;
+    -fx-prompt-text-fill: #374060;
+    -fx-background-radius: 7;
+    -fx-border-color: #252d3d;
+    -fx-border-radius: 7;
+    -fx-border-width: 1;
+    -fx-padding: 9 12;
+    -fx-font-size: 13px;
+}
+.search-field:focused {
+    -fx-border-color: #3b82f6;
+    -fx-background-color: #0d1520;
+}
+
+/* ================================================================
+   PATIENT SIDEBAR LIST (Doctor view)
+   ================================================================ */
+.patient-list-panel {
+    -fx-background-color: #0d1117;
+    -fx-border-color: transparent #252d3d transparent transparent;
+    -fx-border-width: 0 1 0 0;
+    -fx-min-width: 250;
+    -fx-max-width: 250;
+}
+.patient-list-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8892aa;
+    -fx-font-size: 13px;
+    -fx-padding: 12 16;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-max-width: Infinity;
+}
+.patient-list-item:hover {
+    -fx-background-color: #0d1826;
+    -fx-text-fill: #c5cad8;
+}
+.patient-list-item-active {
+    -fx-background-color: linear-gradient(to right, #3b82f6 3px, #0d1826 3px);
+    -fx-text-fill: #60a5fa;
+    -fx-font-weight: bold;
+}
+
+/* ================================================================
+   LOADING OVERLAY
+   ================================================================ */
+.progress-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-radius: 10;
+}
+
+/* ================================================================
+   LOGIN BRAND PANEL
+   ================================================================ */
+.login-brand-panel {
+    -fx-background-color: linear-gradient(to bottom, #0d1520, #111827);
+    -fx-border-color: transparent #1e2b3a transparent transparent;
+    -fx-border-width: 0 1 0 0;
+    -fx-min-width: 280;
+    -fx-max-width: 280;
+    -fx-padding: 60 40;
+}
+.login-form-panel {
+    -fx-background-color: #0f1117;
+    -fx-padding: 60 50;
+}
+.login-brand-title {
+    -fx-text-fill: #e8eaf0;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+}
+.login-brand-sub {
+    -fx-text-fill: #3d4f65;
+    -fx-font-size: 12px;
+    -fx-wrap-text: true;
+}
+.login-brand-tag {
+    -fx-background-color: #0d2e1e;
+    -fx-text-fill: #10b981;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-padding: 4 10;
+}
+.login-feature-label {
+    -fx-text-fill: #3d4f65;
+    -fx-font-size: 12px;
+}

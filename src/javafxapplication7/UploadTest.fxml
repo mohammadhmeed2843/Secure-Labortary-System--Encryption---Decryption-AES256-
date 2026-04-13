@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="javafxapplication7.UploadTestController"
+      spacing="0"
+      styleClass="content-area">
+
+    <stylesheets><URL value="@styles.css"/></stylesheets>
+
+    <!-- ── INNER HEADER ── -->
+    <VBox style="-fx-padding: 28 28 20 28; -fx-background-color: #0f1117;">
+        <Label text="New Lab Record"
+               style="-fx-text-fill:#e8eaf0; -fx-font-size:22px; -fx-font-weight:bold;"/>
+        <Label text="Fill in patient details, select the PDF report, and save — encryption is automatic"
+               style="-fx-text-fill:#3d4f65; -fx-font-size:12px; -fx-padding: 4 0 0 0;"/>
+        <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 12 0 0 0;">
+            <Label text="① Patient"
+                   style="-fx-text-fill:#3b82f6; -fx-font-weight:bold; -fx-font-size:11px;"/>
+            <Label text="›" style="-fx-text-fill:#1e2b3a; -fx-font-size:13px;"/>
+            <Label text="② PDF File" style="-fx-text-fill:#3d4f65; -fx-font-size:11px;"/>
+            <Label text="›" style="-fx-text-fill:#1e2b3a; -fx-font-size:13px;"/>
+            <Label text="③ Test Details" style="-fx-text-fill:#3d4f65; -fx-font-size:11px;"/>
+            <Label text="›" style="-fx-text-fill:#1e2b3a; -fx-font-size:13px;"/>
+            <Label text="④ Save" style="-fx-text-fill:#3d4f65; -fx-font-size:11px;"/>
+        </HBox>
+    </VBox>
+
+    <!-- ── SCROLLABLE CONTENT ── -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                style="-fx-background-color:#0f1117; -fx-background:#0f1117; -fx-border-width:0;">
+        <content>
+            <VBox spacing="14" style="-fx-padding: 0 28 28 28;">
+
+                <!-- PATIENT INFORMATION -->
+                <VBox styleClass="card" spacing="14">
+                    <Label text="PATIENT INFORMATION" styleClass="section-label"/>
+
+                    <!-- Patient number + lookup -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Patient Number" styleClass="field-label"/>
+                            <TextField fx:id="patientNumberField"
+                                       promptText="e.g. P1001"
+                                       styleClass="form-field"
+                                       maxWidth="Infinity"/>
+                        </VBox>
+                        <Button text="Look Up"
+                                onAction="#handleLookupPatient"
+                                prefWidth="100" prefHeight="36"
+                                styleClass="btn-ghost"
+                                style="-fx-translate-y:10;"/>
+                    </HBox>
+
+                    <GridPane hgap="16" vgap="12" maxWidth="Infinity">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+                            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+                        </columnConstraints>
+
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="First Name" styleClass="field-label"/>
+                            <TextField fx:id="firstNameField"
+                                       promptText="Patient's first name"
+                                       styleClass="form-field" maxWidth="Infinity"/>
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Last Name" styleClass="field-label"/>
+                            <TextField fx:id="lastNameField"
+                                       promptText="Patient's last name"
+                                       styleClass="form-field" maxWidth="Infinity"/>
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Date of Birth" styleClass="field-label"/>
+                            <DatePicker fx:id="dobPicker" maxWidth="Infinity"/>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+
+                <!-- PDF FILE -->
+                <VBox styleClass="card" spacing="10">
+                    <Label text="PDF REPORT FILE" styleClass="section-label"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="filePathField"
+                                   promptText="No file selected — click Browse"
+                                   styleClass="form-field" HBox.hgrow="ALWAYS"
+                                   editable="false"/>
+                        <Button text="Browse Files"
+                                onAction="#handleBrowseFile"
+                                prefWidth="120" prefHeight="36"
+                                styleClass="btn-primary"/>
+                    </HBox>
+                    <Label text="The original file is securely deleted after a confirmed save. AES-256 encryption is automatic."
+                           style="-fx-text-fill:#3d4f65; -fx-font-size:11px;" wrapText="true"/>
+                </VBox>
+
+                <!-- TEST DETAILS -->
+                <VBox styleClass="card" spacing="14">
+                    <Label text="TEST DETAILS" styleClass="section-label"/>
+
+                    <GridPane hgap="16" vgap="12" maxWidth="Infinity">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+                            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+                        </columnConstraints>
+
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="Test Type" styleClass="field-label"/>
+                            <ComboBox fx:id="testTypeBox" maxWidth="Infinity"
+                                      promptText="Select test type"/>
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Status" styleClass="field-label"/>
+                            <ComboBox fx:id="statusBox" maxWidth="Infinity"
+                                      promptText="Select status"/>
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Assigned Doctor" styleClass="field-label"/>
+                            <ComboBox fx:id="doctorBox" maxWidth="Infinity"
+                                      promptText="Select doctor"/>
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="Technician" styleClass="field-label"/>
+                            <ComboBox fx:id="technicianBox" maxWidth="Infinity"
+                                      promptText="Select technician"/>
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <Label text="Test Date" styleClass="field-label"/>
+                            <DatePicker fx:id="testDatePicker" maxWidth="Infinity"/>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+
+                <!-- STATUS + ACTIONS -->
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <ProgressIndicator fx:id="progressIndicator"
+                                       prefWidth="24" prefHeight="24"
+                                       style="-fx-progress-color:#3b82f6;"
+                                       visible="false"/>
+                    <Label fx:id="statusLabel" text=""
+                           style="-fx-text-fill:#10b981; -fx-font-size:12px;"
+                           HBox.hgrow="ALWAYS" wrapText="true"/>
+                </HBox>
+
+                <HBox alignment="CENTER_RIGHT" spacing="10">
+                    <Button text="Reset"
+                            onAction="#handleReset"
+                            prefHeight="38" styleClass="btn-ghost"/>
+                    <Button fx:id="saveButton"
+                            text="&#10003;  Save &amp; Encrypt"
+                            onAction="#handleSave"
+                            prefHeight="42" styleClass="btn-success"/>
+                </HBox>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+
+</VBox>
