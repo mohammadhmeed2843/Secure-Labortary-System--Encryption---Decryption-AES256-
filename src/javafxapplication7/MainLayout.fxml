@@ -8,27 +8,22 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/21"
             fx:controller="javafxapplication7.MainLayoutController"
-            prefWidth="980" prefHeight="640"
+            prefWidth="1020" prefHeight="660"
             styleClass="screen-root">
 
     <stylesheets><URL value="@styles.css"/></stylesheets>
 
-    <!-- ══════════════════════════════════════
-         SIDEBAR
-         ══════════════════════════════════════ -->
     <left>
         <VBox styleClass="sidebar">
 
-            <!-- Brand -->
             <VBox styleClass="sidebar-brand" spacing="4">
                 <Label text="&#127973;" style="-fx-font-size:24px;"/>
-                <Label text="Medical Files"
+                <Label text="Medical Lab"
                        style="-fx-text-fill:#c8d0e0; -fx-font-size:15px; -fx-font-weight:bold;"/>
                 <Label text="Secure File System"
                        style="-fx-text-fill:#1e2b3a; -fx-font-size:10px;"/>
             </VBox>
 
-            <!-- Nav section -->
             <Label text="WORKSPACE" styleClass="nav-section-label"/>
 
             <Button fx:id="navDashboard"
@@ -37,34 +32,33 @@
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
 
-            <Button fx:id="navEncrypt"
-                    text="  &#8593;   Encrypt Files"
-                    onAction="#showEncrypt"
+            <Button fx:id="navUpload"
+                    text="  &#8679;   New Record"
+                    onAction="#showUpload"
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
 
-            <Button fx:id="navDecrypt"
-                    text="  &#8595;   Decrypt Files"
-                    onAction="#showDecrypt"
+            <Button fx:id="navExport"
+                    text="  &#8681;   Export File"
+                    onAction="#showExport"
                     styleClass="nav-item"
                     maxWidth="Infinity"/>
 
-            <!-- Push footer to bottom -->
             <Region VBox.vgrow="ALWAYS"/>
 
-            <!-- Footer info -->
-            <Label text="SYSTEM" styleClass="nav-section-label"/>
-            <Label text="AES-256 · CBC Mode"     styleClass="sidebar-footer-label"/>
-            <Label text="PostgreSQL · localhost"  styleClass="sidebar-footer-label">
+            <Label text="SIGNED IN AS" styleClass="nav-section-label"/>
+            <Label fx:id="lblUserName"
+                   text="—"
+                   style="-fx-text-fill:#5a6480; -fx-font-size:11px; -fx-padding: 2 18;"/>
+            <Label fx:id="lblUserRole"
+                   text="—"
+                   style="-fx-text-fill:#1e2b3a; -fx-font-size:10px; -fx-padding: 2 18;">
                 <VBox.margin><Insets bottom="16"/></VBox.margin>
             </Label>
 
         </VBox>
     </left>
 
-    <!-- ══════════════════════════════════════
-         CONTENT AREA (swapped on navigation)
-         ══════════════════════════════════════ -->
     <center>
         <StackPane fx:id="contentArea" styleClass="content-area" alignment="TOP_LEFT"/>
     </center>
