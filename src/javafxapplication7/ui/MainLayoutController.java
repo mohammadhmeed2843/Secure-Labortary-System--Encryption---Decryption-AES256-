@@ -3,11 +3,14 @@ package javafxapplication7.ui;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafxapplication7.models.Role;
 import javafxapplication7.session.Session;
@@ -135,6 +138,20 @@ public class MainLayoutController {
     @FXML private void showAdminAudit()    { navigateToAdminAudit();    }
     @FXML private void showAdminRecovery() { navigateToAdminRecovery(); }
     @FXML private void handleBack()        { navigateToDashboard();     }
+
+    @FXML private void handleSignOut() {
+        try {
+            Session.logout();
+            instance = null;
+            Parent root = FXMLLoader.load(
+                getClass().getResource("/javafxapplication7/resources/fxml/RoleSelect.fxml"));
+            Stage stage = (Stage) contentArea.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     // ── Internal helpers ──────────────────────────────────────────────────────
 
