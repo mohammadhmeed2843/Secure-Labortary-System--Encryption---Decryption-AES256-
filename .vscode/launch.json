@@ -7,9 +7,14 @@
             "request": "launch",
             "mainClass": "javafxapplication7.App",
             "projectName": "JavaFXApplication7_85b57dfe",
-            "vmArgs": "--module-path \"C:/Users/Eng_Hmeed/Desktop/JavaFXApplication7/lib/javafx-sdk-24/lib\" --add-modules javafx.controls,javafx.fxml --enable-native-access=javafx.graphics",
+            "vmArgs": "--module-path \"C:/Users/Eng_Hmeed/Desktop/JavaFXApplication7/lib/javafx-sdk-24/lib\" --add-modules javafx.controls,javafx.fxml,javafx.swing --enable-native-access=javafx.graphics",
             "classPaths": [
                 "C:/Users/Eng_Hmeed/Desktop/JavaFXApplication7/lib/postgresql-42.7.4.jar",
+                "C:/Users/Eng_Hmeed/Desktop/JavaFXApplication7/lib/jna-5.14.0.jar",
+                "C:/Users/Eng_Hmeed/Desktop/JavaFXApplication7/lib/jna-platform-5.14.0.jar",
+                "C:/Users/Eng_Hmeed/Desktop/JavaFXApplication7/lib/pdfbox-2.0.31.jar",
+                "C:/Users/Eng_Hmeed/Desktop/JavaFXApplication7/lib/fontbox-2.0.31.jar",
+                "C:/Users/Eng_Hmeed/Desktop/JavaFXApplication7/lib/commons-logging-1.2.jar",
                 "${workspaceFolder}/out/production/JavaFXApplication7",
                 "${workspaceFolder}/src"
             ]

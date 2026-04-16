@@ -137,6 +137,25 @@ public final class FileService {
 
     // ── Export ────────────────────────────────────────────────────────────────
 
+    /**
+     * Decrypts a file entirely in memory and returns the plaintext bytes.
+     * Nothing is written to disk. Status is set to VIEWED and the access
+     * is recorded in the audit log.
+     */
+    public static byte[] decryptToBytes(int fileId) throws Exception {
+        FileRecord record    = loadRecordWithData(fileId);
+        KeyRecord  keyRecord = KeyService.load(fileId);
+        SecretKey  dek       = CryptoService.unwrapDEK(keyRecord.getEncryptedKey());
+        byte[]     plaintext = CryptoService.decrypt(record.getEncryptedData(), dek, keyRecord.getIv());
+
+        String fileName = (record.getOriginalName() != null && !record.getOriginalName().isBlank())
+                ? record.getOriginalName() : "record_" + fileId;
+        updateStatus(fileId, "VIEWED");
+        AuditService.logCurrent(AuditService.EXPORT, "file", String.valueOf(fileId),
+                "secure-view:" + fileName);
+        return plaintext;
+    }
+
     public static File exportDecrypted(int fileId, File outputDir) throws Exception {
         FileRecord record    = loadRecordWithData(fileId);
         KeyRecord  keyRecord = KeyService.load(fileId);

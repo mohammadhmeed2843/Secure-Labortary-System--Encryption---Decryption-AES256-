@@ -9,7 +9,12 @@
     ],
     "java.project.referencedLibraries": [
         "lib/javafx-sdk-24/lib/*.jar",
-        "lib/postgresql-42.7.4.jar"
+        "lib/postgresql-42.7.4.jar",
+        "lib/jna-5.14.0.jar",
+        "lib/jna-platform-5.14.0.jar",
+        "lib/pdfbox-2.0.31.jar",
+        "lib/fontbox-2.0.31.jar",
+        "lib/commons-logging-1.2.jar"
     ],
     "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -Xlog:disable"
 }

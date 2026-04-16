@@ -18,7 +18,6 @@ import javafxapplication7.services.PatientService;
 import javafxapplication7.services.PermissionService;
 import javafxapplication7.session.Session;
 
-import java.io.File;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -322,17 +321,18 @@ public class PatientFilesController {
             btn.setDisable(true);
             btn.setText("Opening…");
             pi.setVisible(true);
-            File tempDir = new File(System.getProperty("java.io.tmpdir"), "smls_view");
             Thread t = new Thread(() -> {
                 try {
-                    File pdf = FileService.exportDecrypted(r.getFileId(), tempDir);
-                    pdf.deleteOnExit();
+                    byte[] pdfBytes = FileService.decryptToBytes(r.getFileId());
+                    String patientName = activePatient != null
+                            ? activePatient.getFirstName() + " " + activePatient.getLastName()
+                            : null;
                     javafx.application.Platform.runLater(() -> {
                         pi.setVisible(false);
                         btn.setDisable(false);
                         btn.setText("   Open Report   ");
-                        try { java.awt.Desktop.getDesktop().open(pdf); }
-                        catch (Exception ex) { showError("Cannot open viewer: " + ex.getMessage()); }
+                        SecurePdfViewer.open(pdfBytes, patientName,
+                                r.getOriginalName(), Session.getUser().getFullName());
                         if (activePatient != null)
                             loadFilesForPatient(activePatient.getPatientNumber());
                     });
