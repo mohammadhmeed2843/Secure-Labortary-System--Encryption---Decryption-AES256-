@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import java.net.URL?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="javafxapplication7.ui.RecordListController"
+      spacing="0"
+      styleClass="content-area">
+
+    <stylesheets><URL value="@/javafxapplication7/resources/css/styles.css"/></stylesheets>
+
+    <!-- ── PAGE HEADER ── -->
+    <VBox styleClass="page-header">
+        <HBox alignment="CENTER_LEFT" spacing="14">
+            <Label text="&#9776;"
+                   style="-fx-font-size:14px; -fx-text-fill:#C41230;
+                          -fx-background-color:#FEF2F2; -fx-background-radius:8; -fx-padding:6 9;"/>
+            <VBox spacing="4">
+                <Label text="All Records"
+                       style="-fx-text-fill:#111827; -fx-font-size:22px; -fx-font-weight:bold;"/>
+                <Label text="Search, filter, and manage all test records in the system"
+                       style="-fx-text-fill:#6B7280; -fx-font-size:12px;"/>
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <!-- ── TOOLBAR ── -->
+    <HBox spacing="12" alignment="CENTER_LEFT"
+          style="-fx-padding:16 32 16 32; -fx-background-color:#FFFFFF;
+                 -fx-border-color:transparent transparent #EAECF0 transparent;
+                 -fx-border-width:0 0 1 0;">
+        <TextField fx:id="searchField"
+                   promptText="&#128269;  Search by patient, test type, doctor…"
+                   styleClass="search-field"
+                   HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="statusFilter" prefWidth="150"
+                  promptText="All statuses"/>
+        <Button text="&#8635;  Refresh"
+                onAction="#handleRefresh"
+                prefHeight="38" styleClass="btn-secondary"/>
+        <Label fx:id="countLabel" text=""
+               style="-fx-text-fill:#9CA3AF; -fx-font-size:12px; -fx-min-width:80;
+                      -fx-alignment:CENTER_RIGHT;"/>
+    </HBox>
+
+    <!-- ── RECORD LIST ── -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                style="-fx-background-color:transparent; -fx-border-width:0;">
+        <content>
+            <VBox fx:id="recordsContainer" spacing="10"
+                  style="-fx-padding:20 32 36 32; -fx-background-color:#F0F2F5;"/>
+        </content>
+    </ScrollPane>
+
+</VBox>

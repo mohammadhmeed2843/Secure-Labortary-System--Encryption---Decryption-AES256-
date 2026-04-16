@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import java.net.URL?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="javafxapplication7.ui.AdminUsersController"
+      spacing="0"
+      styleClass="content-area">
+
+    <stylesheets><URL value="@/javafxapplication7/resources/css/styles.css"/></stylesheets>
+
+    <!-- ── PAGE HEADER ── -->
+    <VBox styleClass="page-header">
+        <HBox alignment="CENTER_LEFT" spacing="14">
+            <Label text="&#128100;"
+                   style="-fx-font-size:14px; -fx-text-fill:#7C3AED;
+                          -fx-background-color:#F5F3FF; -fx-background-radius:8; -fx-padding:6 8;"/>
+            <VBox spacing="4">
+                <Label text="User Accounts"
+                       style="-fx-text-fill:#111827; -fx-font-size:22px; -fx-font-weight:bold;"/>
+                <Label text="Create accounts, reset passwords, and manage access"
+                       style="-fx-text-fill:#6B7280; -fx-font-size:12px;"/>
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                style="-fx-background-color:transparent; -fx-border-width:0;">
+        <content>
+            <VBox spacing="18" style="-fx-padding:24 32 40 32; -fx-background-color:#F0F2F5;">
+
+                <!-- CREATE USER CARD -->
+                <VBox styleClass="card" spacing="20">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="&#43;"
+                               style="-fx-font-size:14px; -fx-text-fill:white;
+                                      -fx-background-color:#C41230; -fx-background-radius:50%;
+                                      -fx-min-width:28; -fx-min-height:28; -fx-max-width:28; -fx-max-height:28;
+                                      -fx-alignment:center; -fx-font-weight:bold;"/>
+                        <VBox spacing="2">
+                            <Label text="CREATE NEW ACCOUNT" styleClass="section-label"/>
+                            <Label text="New users will be able to sign in immediately"
+                                   style="-fx-text-fill:#9CA3AF; -fx-font-size:11px;"/>
+                        </VBox>
+                    </HBox>
+
+                    <GridPane hgap="16" vgap="14" maxWidth="Infinity">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+                            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+                        </columnConstraints>
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="Username" styleClass="field-label"/>
+                            <TextField fx:id="newUsernameField" promptText="e.g. dr.ali"
+                                       styleClass="form-field" maxWidth="Infinity"/>
+                        </VBox>
+                        <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Full Name" styleClass="field-label"/>
+                            <TextField fx:id="newFullNameField" promptText="Dr. Ali Hassan"
+                                       styleClass="form-field" maxWidth="Infinity"/>
+                        </VBox>
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Password" styleClass="field-label"/>
+                            <PasswordField fx:id="newPasswordField" promptText="Min. 8 characters"
+                                           styleClass="form-field" maxWidth="Infinity"/>
+                        </VBox>
+                        <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="Role" styleClass="field-label"/>
+                            <ComboBox fx:id="newRoleBox" maxWidth="Infinity"
+                                      promptText="Select role"/>
+                        </VBox>
+                    </GridPane>
+
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Label fx:id="createStatusLabel" text=""
+                               style="-fx-font-size:12px;" HBox.hgrow="ALWAYS" wrapText="true"/>
+                        <Button text="Create Account" onAction="#handleCreateUser"
+                                styleClass="btn-primary" prefHeight="40" prefWidth="160"/>
+                    </HBox>
+                </VBox>
+
+                <!-- USER LIST CARD -->
+                <VBox styleClass="card" spacing="16">
+                    <HBox alignment="CENTER_LEFT">
+                        <VBox HBox.hgrow="ALWAYS" spacing="2">
+                            <Label text="ALL ACCOUNTS" styleClass="section-label"/>
+                            <Label text="Manage access and credentials for each user"
+                                   style="-fx-text-fill:#9CA3AF; -fx-font-size:11px;"/>
+                        </VBox>
+                        <Button text="&#8635;  Refresh" onAction="#handleRefresh"
+                                styleClass="btn-ghost" prefHeight="34"/>
+                    </HBox>
+                    <Separator/>
+                    <VBox fx:id="userListBox" spacing="10"/>
+                </VBox>
+
+                <!-- RESET PASSWORD (shown on demand) -->
+                <VBox fx:id="resetSection" styleClass="card" spacing="16"
+                      visible="false" managed="false"
+                      style="-fx-border-color:#FDE8EC; -fx-background-color:#FFFBFB;">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="&#128274;" style="-fx-font-size:14px; -fx-text-fill:#C41230;"/>
+                        <VBox spacing="2">
+                            <Label text="RESET PASSWORD" styleClass="section-label"/>
+                            <Label fx:id="resetTargetLabel" text=""
+                                   style="-fx-text-fill:#374151; -fx-font-size:12px;"/>
+                        </VBox>
+                    </HBox>
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <PasswordField fx:id="resetPasswordField" promptText="New password (min. 8 characters)"
+                                       styleClass="form-field" HBox.hgrow="ALWAYS"/>
+                        <Button text="Apply" onAction="#handleResetPassword"
+                                styleClass="btn-primary" prefHeight="42" prefWidth="90"/>
+                        <Button text="Cancel" onAction="#handleCancelReset"
+                                styleClass="btn-ghost" prefHeight="42"/>
+                    </HBox>
+                    <Label fx:id="resetStatusLabel" text=""
+                           style="-fx-font-size:12px;" wrapText="true"/>
+                </VBox>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+
+</VBox>

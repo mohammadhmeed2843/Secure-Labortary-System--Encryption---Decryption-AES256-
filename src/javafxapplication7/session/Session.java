@@ -1,26 +1,19 @@
 package javafxapplication7.session;
 
-import javafxapplication7.model.RecordDraft;
-import javafxapplication7.model.Role;
-import javafxapplication7.model.User;
-import javafxapplication7.service.PermissionService;
+import javafxapplication7.models.RecordDraft;
+import javafxapplication7.models.Role;
+import javafxapplication7.models.User;
+import javafxapplication7.services.PermissionService;
 
 /**
  * Application-wide session state.
- *
  * Holds the logged-in user and the active upload draft.
- * Both fields are volatile so that changes made on the JavaFX Application
- * Thread are immediately visible to background Task threads (and vice versa).
- *
- * Permission queries delegate to PermissionService — Session itself contains
- * no role-rule logic.
+ * Both fields are volatile so changes on the FX thread are visible to background Tasks.
  */
 public final class Session {
 
     private static volatile User        currentUser;
     private static volatile RecordDraft currentDraft;
-
-    // ── Auth lifecycle ────────────────────────────────────────────────────────
 
     public static void login(User user) {
         currentUser  = user;
@@ -32,17 +25,12 @@ public final class Session {
         currentDraft = null;
     }
 
-    // ── User accessors ────────────────────────────────────────────────────────
-
-    public static User    getUser()     { return currentUser;         }
-    public static boolean isLoggedIn()  { return currentUser != null; }
+    public static User    getUser()    { return currentUser;         }
+    public static boolean isLoggedIn() { return currentUser != null; }
 
     public static boolean hasRole(Role role) {
         return currentUser != null && currentUser.getRole() == role;
     }
-
-    // ── Permission shortcuts ──────────────────────────────────────────────────
-    // Delegate to PermissionService with a null-safe guard.
 
     public static boolean canUpload() {
         return currentUser != null && PermissionService.canUpload(currentUser.getRole());
@@ -64,12 +52,6 @@ public final class Session {
         return currentUser != null && PermissionService.canManageUsers(currentUser.getRole());
     }
 
-    // ── Upload draft ──────────────────────────────────────────────────────────
-
-    /**
-     * Returns the active draft, creating a fresh one if none exists.
-     * Accumulates file + patient + test info across form screens.
-     */
     public static RecordDraft getDraft() {
         if (currentDraft == null) currentDraft = new RecordDraft();
         return currentDraft;

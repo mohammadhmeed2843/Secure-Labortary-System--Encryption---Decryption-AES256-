@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import java.net.URL?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="javafxapplication7.ui.HomePageController"
+      spacing="0"
+      styleClass="content-area">
+
+    <stylesheets><URL value="@/javafxapplication7/resources/css/styles.css"/></stylesheets>
+
+    <!-- ── PAGE HEADER ── -->
+    <VBox style="-fx-background-color:#FFFFFF; -fx-padding:32 36 26 36;
+                 -fx-border-color:transparent transparent #EAECF0 transparent;
+                 -fx-border-width:0 0 1 0;">
+        <Label fx:id="lblWelcome"
+               text="Dashboard"
+               style="-fx-text-fill:#111827; -fx-font-size:26px; -fx-font-weight:bold;"/>
+        <Label fx:id="lblRole"
+               text="—"
+               style="-fx-text-fill:#6B7280; -fx-font-size:13px; -fx-padding:5 0 0 0;"/>
+    </VBox>
+
+    <!-- ── SCROLLABLE BODY ── -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                style="-fx-background-color:transparent; -fx-border-width:0;">
+        <content>
+            <VBox spacing="24" style="-fx-padding:28 32 40 32; -fx-background-color:#F0F2F5;">
+
+                <!-- STAT CARDS -->
+                <HBox fx:id="statCardsRow" spacing="16"/>
+
+                <!-- QUICK ACTIONS -->
+                <VBox styleClass="card" spacing="20">
+                    <VBox spacing="4">
+                        <Label text="QUICK ACTIONS" styleClass="section-label"/>
+                        <Label text="Common tasks for your role"
+                               style="-fx-text-fill:#9CA3AF; -fx-font-size:11px;"/>
+                    </VBox>
+                    <HBox fx:id="quickActionsBox" spacing="14" alignment="CENTER_LEFT"/>
+                </VBox>
+
+                <!-- SYSTEM STATUS -->
+                <VBox styleClass="card" spacing="16">
+                    <Label text="SYSTEM STATUS" styleClass="section-label"/>
+                    <HBox spacing="0">
+                        <!-- Encryption -->
+                        <VBox spacing="6" HBox.hgrow="ALWAYS" style="-fx-padding:0 24 0 0;">
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label text="&#128274;"
+                                       style="-fx-font-size:16px;"/>
+                                <Label text="Encryption"
+                                       style="-fx-text-fill:#374151; -fx-font-size:13px; -fx-font-weight:bold;"/>
+                            </HBox>
+                            <Label text="AES-256-CBC active"
+                                   style="-fx-text-fill:#059669; -fx-font-size:12px; -fx-font-weight:bold;"/>
+                        </VBox>
+                        <!-- Divider -->
+                        <Separator orientation="VERTICAL"
+                                   style="-fx-padding:0 24 0 0;"/>
+                        <!-- Access Control -->
+                        <VBox spacing="6" HBox.hgrow="ALWAYS" style="-fx-padding:0 24 0 24;">
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label text="&#128100;"
+                                       style="-fx-font-size:16px;"/>
+                                <Label text="Access Control"
+                                       style="-fx-text-fill:#374151; -fx-font-size:13px; -fx-font-weight:bold;"/>
+                            </HBox>
+                            <Label text="Role-based permissions"
+                                   style="-fx-text-fill:#059669; -fx-font-size:12px; -fx-font-weight:bold;"/>
+                        </VBox>
+                        <!-- Divider -->
+                        <Separator orientation="VERTICAL"
+                                   style="-fx-padding:0 24 0 0;"/>
+                        <!-- Audit Log -->
+                        <VBox spacing="6" HBox.hgrow="ALWAYS" style="-fx-padding:0 0 0 24;">
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label text="&#128065;"
+                                       style="-fx-font-size:16px;"/>
+                                <Label text="Audit Logging"
+                                       style="-fx-text-fill:#374151; -fx-font-size:13px; -fx-font-weight:bold;"/>
+                            </HBox>
+                            <Label text="All actions recorded"
+                                   style="-fx-text-fill:#059669; -fx-font-size:12px; -fx-font-weight:bold;"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+
+</VBox>
