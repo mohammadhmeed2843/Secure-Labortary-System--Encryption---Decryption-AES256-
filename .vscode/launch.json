@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "javafxapplication7.App",
+            "vmArgs": "--module-path \"${workspaceFolder}/lib/javafx-sdk-24/lib\" --add-modules javafx.controls,javafx.fxml,javafx.swing --enable-native-access=javafx.graphics",
+            "classPaths": [
+                "${workspaceFolder}/lib/postgresql-42.7.4.jar",
+                "${workspaceFolder}/lib/jna-5.14.0.jar",
+                "${workspaceFolder}/lib/jna-platform-5.14.0.jar",
+                "${workspaceFolder}/lib/pdfbox-2.0.31.jar",
+                "${workspaceFolder}/lib/fontbox-2.0.31.jar",
+                "${workspaceFolder}/lib/commons-logging-1.2.jar",
+                "${workspaceFolder}/out/production/JavaFXApplication7",
+                "${workspaceFolder}/src"
+            ]
+        }
+    ]
+}

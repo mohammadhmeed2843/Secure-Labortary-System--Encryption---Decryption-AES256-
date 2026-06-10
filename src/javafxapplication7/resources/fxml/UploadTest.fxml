@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import java.net.URL?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="javafxapplication7.ui.UploadTestController"
+      spacing="0"
+      styleClass="content-area">
+
+    <stylesheets><URL value="@/javafxapplication7/resources/css/styles.css"/></stylesheets>
+
+    <!-- ── PAGE HEADER ── -->
+    <VBox styleClass="page-header">
+        <HBox alignment="CENTER_LEFT" spacing="14">
+            <Label text="&#8679;"
+                   style="-fx-font-size:24px; -fx-text-fill:#C41230;
+                          -fx-background-color:#FEF2F2; -fx-background-radius:50%;
+                          -fx-padding:6 10;"/>
+            <VBox spacing="4">
+                <Label text="New Test Record"
+                       style="-fx-text-fill:#111827; -fx-font-size:22px; -fx-font-weight:bold;"/>
+                <Label text="Complete all sections, then save — your file is protected automatically"
+                       style="-fx-text-fill:#6B7280; -fx-font-size:12px;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Step indicators -->
+        <HBox spacing="0" alignment="CENTER_LEFT" style="-fx-padding:18 0 0 0;">
+            <HBox alignment="CENTER" spacing="6"
+                  style="-fx-background-color:#FEF2F2; -fx-background-radius:20;
+                         -fx-padding:5 14; -fx-border-color:#FECACA; -fx-border-radius:20; -fx-border-width:1;">
+                <Label text="1" style="-fx-background-color:#C41230; -fx-text-fill:white;
+                                       -fx-font-size:10px; -fx-font-weight:bold;
+                                       -fx-min-width:18; -fx-min-height:18; -fx-max-width:18; -fx-max-height:18;
+                                       -fx-background-radius:50%; -fx-alignment:center;"/>
+                <Label text="Patient" style="-fx-text-fill:#C41230; -fx-font-size:11px; -fx-font-weight:bold;"/>
+            </HBox>
+            <Label text=" ──── " style="-fx-text-fill:#E5E7EB; -fx-font-size:10px;"/>
+            <HBox alignment="CENTER" spacing="6"
+                  style="-fx-background-color:#F3F4F6; -fx-background-radius:20;
+                         -fx-padding:5 14;">
+                <Label text="2" style="-fx-background-color:#D1D5DB; -fx-text-fill:white;
+                                       -fx-font-size:10px; -fx-font-weight:bold;
+                                       -fx-min-width:18; -fx-min-height:18; -fx-max-width:18; -fx-max-height:18;
+                                       -fx-background-radius:50%; -fx-alignment:center;"/>
+                <Label text="Report File" style="-fx-text-fill:#9CA3AF; -fx-font-size:11px;"/>
+            </HBox>
+            <Label text=" ──── " style="-fx-text-fill:#E5E7EB; -fx-font-size:10px;"/>
+            <HBox alignment="CENTER" spacing="6"
+                  style="-fx-background-color:#F3F4F6; -fx-background-radius:20;
+                         -fx-padding:5 14;">
+                <Label text="3" style="-fx-background-color:#D1D5DB; -fx-text-fill:white;
+                                       -fx-font-size:10px; -fx-font-weight:bold;
+                                       -fx-min-width:18; -fx-min-height:18; -fx-max-width:18; -fx-max-height:18;
+                                       -fx-background-radius:50%; -fx-alignment:center;"/>
+                <Label text="Test Details" style="-fx-text-fill:#9CA3AF; -fx-font-size:11px;"/>
+            </HBox>
+            <Label text=" ──── " style="-fx-text-fill:#E5E7EB; -fx-font-size:10px;"/>
+            <HBox alignment="CENTER" spacing="6"
+                  style="-fx-background-color:#F3F4F6; -fx-background-radius:20;
+                         -fx-padding:5 14;">
+                <Label text="4" style="-fx-background-color:#D1D5DB; -fx-text-fill:white;
+                                       -fx-font-size:10px; -fx-font-weight:bold;
+                                       -fx-min-width:18; -fx-min-height:18; -fx-max-width:18; -fx-max-height:18;
+                                       -fx-background-radius:50%; -fx-alignment:center;"/>
+                <Label text="Save" style="-fx-text-fill:#9CA3AF; -fx-font-size:11px;"/>
+            </HBox>
+        </HBox>
+    </VBox>
+
+    <!-- ── FORM BODY ── -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                style="-fx-background-color:transparent; -fx-border-width:0;">
+        <content>
+            <VBox spacing="16" style="-fx-padding:24 32 40 32; -fx-background-color:#F0F2F5;">
+
+                <!-- ①  PATIENT INFORMATION -->
+                <VBox styleClass="card" spacing="18">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="&#128100;"
+                               style="-fx-font-size:14px; -fx-background-color:#EEF2FF;
+                                      -fx-background-radius:8; -fx-padding:6 8;"/>
+                        <VBox spacing="2">
+                            <Label text="PATIENT INFORMATION" styleClass="section-label"/>
+                            <Label text="Search an existing patient or enter new details"
+                                   style="-fx-text-fill:#9CA3AF; -fx-font-size:11px;"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Patient ID" styleClass="field-label"/>
+                            <TextField fx:id="patientNumberField"
+                                       promptText="e.g. P-1001"
+                                       styleClass="form-field"
+                                       maxWidth="Infinity"/>
+                        </VBox>
+                        <Button text="&#128269;  Look Up"
+                                onAction="#handleLookupPatient"
+                                prefWidth="120" prefHeight="42"
+                                styleClass="btn-secondary"
+                                style="-fx-translate-y:10;"/>
+                    </HBox>
+
+                    <GridPane hgap="16" vgap="14" maxWidth="Infinity">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+                            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+                        </columnConstraints>
+
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="First Name" styleClass="field-label"/>
+                            <TextField fx:id="firstNameField" promptText="First name"
+                                       styleClass="form-field" maxWidth="Infinity"/>
+                        </VBox>
+                        <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Last Name" styleClass="field-label"/>
+                            <TextField fx:id="lastNameField" promptText="Last name"
+                                       styleClass="form-field" maxWidth="Infinity"/>
+                        </VBox>
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Date of Birth" styleClass="field-label"/>
+                            <DatePicker fx:id="dobPicker" maxWidth="Infinity"/>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+
+                <!-- EXISTING RECORDS (shown after lookup) -->
+                <VBox fx:id="existingRecordsSection" styleClass="card" spacing="14"
+                      visible="false" managed="false"
+                      style="-fx-border-color:#FDE8EC; -fx-background-color:#FFFBFB;">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="&#8635;" style="-fx-font-size:16px; -fx-text-fill:#C41230;"/>
+                        <VBox spacing="2">
+                            <Label text="UPDATE EXISTING RECORD" styleClass="section-label"/>
+                            <Label text="Select a record to create an updated version, or leave blank to add a new one"
+                                   style="-fx-text-fill:#9CA3AF; -fx-font-size:11px;" wrapText="true"/>
+                        </VBox>
+                    </HBox>
+                    <VBox spacing="4">
+                        <Label text="Record to Update" styleClass="field-label"/>
+                        <ComboBox fx:id="supersededRecordBox" maxWidth="Infinity"
+                                  promptText="— Add new independent record —"/>
+                    </VBox>
+                </VBox>
+
+                <!-- ②  REPORT FILE -->
+                <VBox styleClass="card" spacing="16">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="&#128196;"
+                               style="-fx-font-size:14px; -fx-background-color:#FEF2F2;
+                                      -fx-background-radius:8; -fx-padding:6 8;"/>
+                        <VBox spacing="2">
+                            <Label text="TEST REPORT FILE" styleClass="section-label"/>
+                            <Label text="PDF only · The original file is securely removed after saving"
+                                   style="-fx-text-fill:#9CA3AF; -fx-font-size:11px;"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <TextField fx:id="filePathField"
+                                   promptText="No file selected — click Browse to choose a PDF"
+                                   styleClass="form-field" HBox.hgrow="ALWAYS"
+                                   editable="false"/>
+                        <Button text="Browse…"
+                                onAction="#handleBrowseFile"
+                                prefHeight="42" prefWidth="110"
+                                styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- ③  TEST DETAILS -->
+                <VBox styleClass="card" spacing="16">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="&#128203;"
+                               style="-fx-font-size:14px; -fx-background-color:#F0FDF4;
+                                      -fx-background-radius:8; -fx-padding:6 8;"/>
+                        <VBox spacing="2">
+                            <Label text="TEST DETAILS" styleClass="section-label"/>
+                            <Label text="Select the test type, personnel, and date"
+                                   style="-fx-text-fill:#9CA3AF; -fx-font-size:11px;"/>
+                        </VBox>
+                    </HBox>
+
+                    <GridPane hgap="16" vgap="14" maxWidth="Infinity">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+                            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+                        </columnConstraints>
+
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="Test Type" styleClass="field-label"/>
+                            <ComboBox fx:id="testTypeBox" maxWidth="Infinity"
+                                      promptText="Select test type"/>
+                        </VBox>
+                        <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Status" styleClass="field-label"/>
+                            <ComboBox fx:id="statusBox" maxWidth="Infinity"
+                                      promptText="Select status"/>
+                        </VBox>
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Assigned Doctor" styleClass="field-label"/>
+                            <ComboBox fx:id="doctorBox" maxWidth="Infinity"
+                                      promptText="Select doctor"/>
+                        </VBox>
+                        <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="Lab Technician" styleClass="field-label"/>
+                            <ComboBox fx:id="technicianBox" maxWidth="Infinity"
+                                      promptText="Select technician"/>
+                        </VBox>
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <Label text="Test Date" styleClass="field-label"/>
+                            <DatePicker fx:id="testDatePicker" maxWidth="Infinity"/>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+
+                <!-- ④  SAVE SECTION -->
+                <VBox styleClass="card" spacing="16">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <ProgressIndicator fx:id="progressIndicator"
+                                           prefWidth="24" prefHeight="24"
+                                           style="-fx-progress-color:#C41230;"
+                                           visible="false"/>
+                        <Label fx:id="statusLabel" text=""
+                               style="-fx-font-size:13px;" HBox.hgrow="ALWAYS" wrapText="true"/>
+                    </HBox>
+
+                    <HBox alignment="CENTER_RIGHT" spacing="12">
+                        <Button text="&#10006;  Clear Form"
+                                onAction="#handleReset"
+                                prefHeight="42" styleClass="btn-ghost"/>
+                        <Button fx:id="saveButton"
+                                text="&#128274;  Save Securely"
+                                onAction="#handleSave"
+                                prefHeight="46" prefWidth="200"
+                                styleClass="btn-success"/>
+                    </HBox>
+
+                    <HBox alignment="CENTER" spacing="6"
+                          style="-fx-padding:4 0 0 0;">
+                        <Label text="&#128274;" style="-fx-font-size:11px; -fx-text-fill:#9CA3AF;"/>
+                        <Label text="The original file is permanently and securely removed after saving"
+                               style="-fx-text-fill:#9CA3AF; -fx-font-size:11px;" wrapText="true"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+
+</VBox>

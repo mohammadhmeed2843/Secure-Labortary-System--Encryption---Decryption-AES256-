@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import java.net.URL?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="javafxapplication7.ui.AdminAuditController"
+      spacing="0"
+      styleClass="content-area">
+
+    <stylesheets><URL value="@/javafxapplication7/resources/css/styles.css"/></stylesheets>
+
+    <!-- ── PAGE HEADER ── -->
+    <VBox styleClass="page-header">
+        <HBox alignment="CENTER_LEFT" spacing="14">
+            <Label text="&#128203;"
+                   style="-fx-font-size:14px; -fx-text-fill:#059669;
+                          -fx-background-color:#ECFDF5; -fx-background-radius:8; -fx-padding:6 8;"/>
+            <VBox spacing="4">
+                <Label text="Activity Log"
+                       style="-fx-text-fill:#111827; -fx-font-size:22px; -fx-font-weight:bold;"/>
+                <Label text="Complete audit trail — every action is permanently recorded"
+                       style="-fx-text-fill:#6B7280; -fx-font-size:12px;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Controls -->
+        <HBox spacing="12" alignment="CENTER_LEFT" style="-fx-padding:18 0 0 0;">
+            <Label text="Show last" style="-fx-text-fill:#6B7280; -fx-font-size:12px;"/>
+            <ComboBox fx:id="limitBox" prefWidth="120"
+                      promptText="100 entries"/>
+            <Label text="entries" style="-fx-text-fill:#6B7280; -fx-font-size:12px;"/>
+            <Button text="Load" onAction="#handleLoad"
+                    styleClass="btn-primary" prefHeight="36" prefWidth="80"/>
+            <Button text="&#8635; Refresh" onAction="#handleRefresh"
+                    styleClass="btn-ghost" prefHeight="36"/>
+        </HBox>
+    </VBox>
+
+    <!-- ── LOG ENTRIES ── -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                style="-fx-background-color:transparent; -fx-border-width:0;">
+        <content>
+            <VBox fx:id="auditListBox" spacing="4"
+                  style="-fx-padding:20 32 36 32; -fx-background-color:#F0F2F5;"/>
+        </content>
+    </ScrollPane>
+
+</VBox>

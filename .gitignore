@@ -1,0 +1,28 @@
+# Compiled classes
+*.class
+out/
+build/
+dist/
+
+# NetBeans
+nbproject/private/
+nbproject/Makefile-*.mk
+nbproject/Package-*.bash
+nbbuild/
+nbdist/
+
+# VS Code
+.vscode/settings.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local runtime installed by setup
+.runtime/
+
+# Library zips (keep JARs, not archives)
+lib/*.zip

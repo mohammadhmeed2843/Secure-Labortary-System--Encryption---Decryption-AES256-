@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import java.net.URL?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/21"
+            fx:controller="javafxapplication7.ui.MainLayoutController"
+            prefWidth="1120" prefHeight="720"
+            styleClass="screen-root">
+
+    <stylesheets><URL value="@/javafxapplication7/resources/css/styles.css"/></stylesheets>
+
+    <!-- ═══════════════════════════════════════════════════
+         SIDEBAR
+    ════════════════════════════════════════════════════════ -->
+    <left>
+        <VBox styleClass="sidebar">
+
+            <!-- Brand -->
+            <VBox styleClass="sidebar-brand" spacing="3">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="&#9764;"
+                           style="-fx-font-size:20px; -fx-text-fill:#C41230;"/>
+                    <VBox spacing="1">
+                        <Label text="MedLab Secure"
+                               style="-fx-text-fill:#111827; -fx-font-size:14px; -fx-font-weight:bold;"/>
+                        <Label text="Records Platform"
+                               style="-fx-text-fill:#9CA3AF; -fx-font-size:10px;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <Label text="WORKSPACE" styleClass="nav-section-label"/>
+
+            <Button fx:id="navDashboard"
+                    text="  &#8962;   Home"
+                    onAction="#showDashboard"
+                    styleClass="nav-item"
+                    maxWidth="Infinity"/>
+
+            <Button fx:id="navUpload"
+                    text="  &#8679;   New Test Record"
+                    onAction="#showUpload"
+                    styleClass="nav-item"
+                    maxWidth="Infinity"/>
+
+            <Button fx:id="navRecords"
+                    text="  &#9776;   All Records"
+                    onAction="#showRecords"
+                    styleClass="nav-item"
+                    maxWidth="Infinity"/>
+
+            <Button fx:id="navPatientFiles"
+                    text="  &#128196;   Patient Files"
+                    onAction="#showPatientFiles"
+                    styleClass="nav-item"
+                    maxWidth="Infinity"/>
+
+            <!-- ADMIN SECTION -->
+            <Label fx:id="navAdminSection" text="ADMINISTRATION"
+                   styleClass="nav-section-label" managed="false" visible="false"/>
+
+            <Button fx:id="navAdminUsers"
+                    text="  &#128100;   User Accounts"
+                    onAction="#showAdminUsers"
+                    styleClass="nav-item"
+                    maxWidth="Infinity"
+                    managed="false" visible="false"/>
+
+            <Button fx:id="navAdminAudit"
+                    text="  &#128203;   Activity Log"
+                    onAction="#showAdminAudit"
+                    styleClass="nav-item"
+                    maxWidth="Infinity"
+                    managed="false" visible="false"/>
+
+            <Button fx:id="navAdminRecovery"
+                    text="  &#128260;   File Recovery"
+                    onAction="#showAdminRecovery"
+                    styleClass="nav-item"
+                    maxWidth="Infinity"
+                    managed="false" visible="false"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Signed-in user footer -->
+            <VBox style="-fx-padding:14 18 18 18;
+                         -fx-background-color:#FAFBFC;
+                         -fx-border-color:#EAECF0 transparent transparent transparent;
+                         -fx-border-width:1 0 0 0;">
+                <Label text="SIGNED IN AS" styleClass="nav-section-label"
+                       style="-fx-padding:0 0 6 0;"/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label fx:id="lblAvatarInitial" text="?"
+                           style="-fx-background-color:#C41230; -fx-text-fill:white;
+                                  -fx-font-weight:bold; -fx-font-size:12px;
+                                  -fx-min-width:32; -fx-min-height:32; -fx-max-width:32; -fx-max-height:32;
+                                  -fx-background-radius:50%; -fx-alignment:center;"/>
+                    <VBox spacing="1" HBox.hgrow="ALWAYS">
+                        <Label fx:id="lblUserName" text="—"
+                               style="-fx-text-fill:#374151; -fx-font-size:12px; -fx-font-weight:bold;"/>
+                        <Label fx:id="lblUserRole" text="—"
+                               style="-fx-text-fill:#9CA3AF; -fx-font-size:10px;"/>
+                    </VBox>
+                </HBox>
+                <Button text="&#x2192;  Sign Out"
+                        onAction="#handleSignOut"
+                        maxWidth="Infinity"
+                        style="-fx-margin:8 0 0 0; -fx-background-color:#FEF2F2; -fx-text-fill:#C41230;
+                               -fx-font-size:11px; -fx-font-weight:bold;
+                               -fx-border-color:#FECACA; -fx-border-radius:8; -fx-background-radius:8;
+                               -fx-padding:7 12; -fx-cursor:hand; -fx-border-width:1;"/>
+                <Button text="Exit Kiosk"
+                        onAction="#handleExitRequested"
+                        maxWidth="Infinity"
+                        styleClass="btn-danger"
+                        style="-fx-margin:8 0 0 0; -fx-padding:7 12; -fx-font-size:11px;"/>
+            </VBox>
+
+        </VBox>
+    </left>
+
+    <!-- ═══════════════════════════════════════════════════
+         CONTENT AREA
+    ════════════════════════════════════════════════════════ -->
+    <center>
+        <VBox styleClass="content-area">
+
+            <!-- Breadcrumb bar — hidden on Dashboard, shown on inner pages -->
+            <HBox fx:id="breadcrumbBar"
+                  visible="false" managed="false"
+                  alignment="CENTER_LEFT" spacing="8"
+                  style="-fx-padding:0 28 0 28; -fx-min-height:48; -fx-max-height:48;
+                         -fx-background-color:#FFFFFF;
+                         -fx-border-color:transparent transparent #EAECF0 transparent;
+                         -fx-border-width:0 0 1 0;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.03),6,0,2,0);">
+                <Button fx:id="btnBack"
+                        text="&#8592;  Home"
+                        onAction="#handleBack"
+                        style="-fx-background-color:transparent; -fx-text-fill:#6B7280;
+                               -fx-font-size:12px; -fx-cursor:hand; -fx-padding:5 12;
+                               -fx-border-color:#E5E7EB; -fx-border-radius:8; -fx-background-radius:8;"/>
+                <Label text="/"
+                       style="-fx-text-fill:#D1D5DB; -fx-font-size:14px; -fx-padding:0 2;"/>
+                <Label fx:id="breadcrumbLabel" text=""
+                       style="-fx-text-fill:#111827; -fx-font-size:13px; -fx-font-weight:bold;"/>
+            </HBox>
+
+            <StackPane fx:id="contentArea" alignment="TOP_LEFT" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </center>
+
+</BorderPane>

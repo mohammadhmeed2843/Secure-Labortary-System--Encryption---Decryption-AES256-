@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import java.net.URL?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/21"
+            fx:controller="javafxapplication7.ui.RoleSelectController"
+            styleClass="entry-root"
+            prefWidth="1366" prefHeight="768">
+
+    <stylesheets><URL value="@/javafxapplication7/resources/css/styles.css"/></stylesheets>
+
+    <top>
+        <HBox alignment="CENTER_LEFT"
+              minHeight="96" prefHeight="112"
+              styleClass="entry-topbar">
+            <HBox alignment="CENTER_LEFT" spacing="12" HBox.hgrow="ALWAYS">
+                <Label text="&#9764;" style="-fx-font-size:24px; -fx-text-fill:#C41230;"/>
+                <VBox spacing="2">
+                    <Label text="MedLab Secure"
+                           style="-fx-text-fill:#111827; -fx-font-size:18px; -fx-font-weight:bold;"/>
+                    <Label text="Medical Records Platform"
+                           style="-fx-text-fill:#9CA3AF; -fx-font-size:12px;"/>
+                </VBox>
+            </HBox>
+
+            <HBox alignment="CENTER_RIGHT" spacing="14">
+                <VBox fx:id="cardAdmin" styleClass="role-admin-card"
+                      alignment="CENTER" spacing="4"
+                      onMouseClicked="#handleRoleSelected">
+                    <Label text="&#9881;" style="-fx-font-size:18px; -fx-text-fill:#6B7280;"/>
+                    <Label text="Admin" style="-fx-text-fill:#6B7280; -fx-font-size:11px; -fx-font-weight:bold;"/>
+                </VBox>
+
+                <Button text="Exit"
+                        onAction="#handleExitRequested"
+                        styleClass="btn-danger"
+                        prefWidth="96" prefHeight="42"/>
+            </HBox>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER" spacing="28" styleClass="entry-center">
+
+            <VBox alignment="CENTER" spacing="8">
+                <Label text="Welcome Back"
+                       style="-fx-text-fill:#111827; -fx-font-size:38px; -fx-font-weight:bold;"/>
+                <Label text="Select your role to sign in securely"
+                       style="-fx-text-fill:#6B7280; -fx-font-size:16px;"/>
+            </VBox>
+
+            <HBox alignment="CENTER" spacing="36">
+
+                <VBox fx:id="cardReceptionist" styleClass="role-hero-card"
+                      alignment="CENTER" spacing="14"
+                      onMouseClicked="#handleRoleSelected">
+                    <Label text="&#128203;"
+                           style="-fx-font-size:52px; -fx-background-color:#FEF2F2;
+                                  -fx-background-radius:50%; -fx-padding:16;"/>
+                    <VBox alignment="CENTER" spacing="5">
+                        <Label text="Receptionist"
+                               style="-fx-text-fill:#111827; -fx-font-size:20px; -fx-font-weight:bold;"/>
+                        <Label text="Upload &amp; manage&#10;patient records"
+                               style="-fx-text-fill:#6B7280; -fx-font-size:13px;"
+                               textAlignment="CENTER" wrapText="true"/>
+                    </VBox>
+                    <Label text="Sign In &gt;"
+                           style="-fx-text-fill:#C41230; -fx-font-size:12px; -fx-font-weight:bold;"/>
+                </VBox>
+
+                <VBox fx:id="cardDoctor" styleClass="role-hero-card"
+                      alignment="CENTER" spacing="14"
+                      onMouseClicked="#handleRoleSelected">
+                    <Label text="&#128657;"
+                           style="-fx-font-size:52px; -fx-background-color:#EFF6FF;
+                                  -fx-background-radius:50%; -fx-padding:16;"/>
+                    <VBox alignment="CENTER" spacing="5">
+                        <Label text="Doctor"
+                               style="-fx-text-fill:#111827; -fx-font-size:20px; -fx-font-weight:bold;"/>
+                        <Label text="View patient&#10;test results"
+                               style="-fx-text-fill:#6B7280; -fx-font-size:13px;"
+                               textAlignment="CENTER" wrapText="true"/>
+                    </VBox>
+                    <Label text="Sign In &gt;"
+                           style="-fx-text-fill:#2563EB; -fx-font-size:12px; -fx-font-weight:bold;"/>
+                </VBox>
+
+            </HBox>
+
+            <VBox fx:id="passwordPanel" alignment="CENTER" spacing="0"
+                  visible="false" managed="false">
+
+                <VBox styleClass="pw-dialog" alignment="CENTER" spacing="18"
+                      style="-fx-min-width:420; -fx-max-width:420;">
+
+                    <VBox alignment="CENTER" spacing="6">
+                        <Label fx:id="selectedRoleLabel" text=""
+                               style="-fx-text-fill:#C41230; -fx-font-size:14px; -fx-font-weight:bold;"/>
+                        <Label text="Enter your password to continue"
+                               style="-fx-text-fill:#6B7280; -fx-font-size:12px;"/>
+                    </VBox>
+
+                    <PasswordField fx:id="passwordField"
+                                   promptText="Password"
+                                   styleClass="form-field"
+                                   maxWidth="Infinity"
+                                   onAction="#handleSignIn"/>
+
+                    <Label fx:id="errorLabel" text=""
+                           style="-fx-text-fill:#DC2626; -fx-font-size:12px;"
+                           wrapText="true" maxWidth="360"/>
+
+                    <HBox spacing="12" alignment="CENTER">
+                        <Button text="Cancel"
+                                onAction="#handleCancel"
+                                styleClass="btn-ghost"
+                                prefWidth="110" prefHeight="42"/>
+                        <Button fx:id="signInButton"
+                                text="Sign In"
+                                onAction="#handleSignIn"
+                                styleClass="btn-primary"
+                                prefWidth="200" prefHeight="42"/>
+                    </HBox>
+
+                    <ProgressIndicator fx:id="loadingIndicator"
+                                       prefWidth="28" prefHeight="28"
+                                       visible="false"
+                                       style="-fx-progress-color:#C41230;"/>
+                </VBox>
+            </VBox>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="20" minHeight="72" prefHeight="84"
+              styleClass="entry-footer">
+            <Label text="&#128274;  AES-256 Encryption"
+                   style="-fx-text-fill:#D1D5DB; -fx-font-size:11px;"/>
+            <Label text="&#9679;" style="-fx-text-fill:#E5E7EB; -fx-font-size:8px;"/>
+            <Label text="&#128203;  Role-Based Access"
+                   style="-fx-text-fill:#D1D5DB; -fx-font-size:11px;"/>
+            <Label text="&#9679;" style="-fx-text-fill:#E5E7EB; -fx-font-size:8px;"/>
+            <Label text="&#128065;  All Actions Logged"
+                   style="-fx-text-fill:#D1D5DB; -fx-font-size:11px;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

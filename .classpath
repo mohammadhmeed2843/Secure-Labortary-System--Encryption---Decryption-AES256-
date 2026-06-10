@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src"/>
+    <classpathentry kind="lib" path="lib/javafx-sdk-24/lib/javafx.base.jar"/>
+    <classpathentry kind="lib" path="lib/javafx-sdk-24/lib/javafx.controls.jar"/>
+    <classpathentry kind="lib" path="lib/javafx-sdk-24/lib/javafx.fxml.jar"/>
+    <classpathentry kind="lib" path="lib/javafx-sdk-24/lib/javafx.graphics.jar"/>
+    <classpathentry kind="lib" path="lib/javafx-sdk-24/lib/javafx.media.jar"/>
+    <classpathentry kind="lib" path="lib/javafx-sdk-24/lib/javafx.swing.jar"/>
+    <classpathentry kind="lib" path="lib/javafx-sdk-24/lib/javafx.web.jar"/>
+    <classpathentry kind="lib" path="lib/javafx-sdk-24/lib/jdk.jsobject.jar"/>
+    <classpathentry kind="lib" path="lib/javafx-sdk-24/lib/jfx.incubator.input.jar"/>
+    <classpathentry kind="lib" path="lib/javafx-sdk-24/lib/jfx.incubator.richtext.jar"/>
+    <classpathentry kind="lib" path="lib/postgresql-42.7.4.jar"/>
+    <classpathentry kind="lib" path="lib/jna-5.14.0.jar"/>
+    <classpathentry kind="lib" path="lib/jna-platform-5.14.0.jar"/>
+    <classpathentry kind="lib" path="lib/pdfbox-2.0.31.jar"/>
+    <classpathentry kind="lib" path="lib/fontbox-2.0.31.jar"/>
+    <classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="output" path="out/production/JavaFXApplication7"/>
+</classpath>
